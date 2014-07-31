@@ -1,249 +1,35 @@
-<!doctype html>
-<html lang="en">
+<!DOCTYPE html>
+<!--
+  ~ JBoss, Home of Professional Open Source.
+  ~ Copyright 2014, Red Hat, Inc., and individual contributors
+  ~ as indicated by the @author tags. See the copyright.txt file in the
+  ~ distribution for a full listing of individual contributors.
+  ~
+  ~ This is free software; you can redistribute it and/or modify it
+  ~ under the terms of the GNU Lesser General Public License as
+  ~ published by the Free Software Foundation; either version 2.1 of
+  ~ the License, or (at your option) any later version.
+  ~
+  ~ This software is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+  ~ Lesser General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU Lesser General Public
+  ~ License along with this software; if not, write to the Free
+  ~ Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+  ~ 02110-1301 USA, or see the FSF site: http://www.fsf.org.
+  -->
 
-<head>
-    <meta charset="utf-8">
-
-    <title>WildFly Authentication and Authorization SPI</title>
-
-    <meta name="description" content="WildFly Authentication and Authorization SPI Overview">
-    <meta name="author" content="David M. Lloyd">
-
-    <meta name="apple-mobile-web-app-capable" content="yes"/>
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
-
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-
-    <link rel="stylesheet" href="css/reveal.min.css">
-    <link rel="stylesheet" href="css/theme/night.css" id="theme">
-
-    <!-- For syntax highlighting -->
-    <link rel="stylesheet" href="lib/css/zenburn.css">
-
-    <!-- If the query includes 'print-pdf', include the PDF print sheet -->
-    <script>
-        if (window.location.search.match(/print-pdf/gi)) {
-            var link = document.createElement('link');
-            link.rel = 'stylesheet';
-            link.type = 'text/css';
-            link.href = 'css/print/pdf.css';
-            document.getElementsByTagName('head')[0].appendChild(link);
-        }
-    </script>
-
-    <!--[if lt IE 9]>
-    <script src="lib/js/html5shiv.js"></script>
-    <![endif]-->
-
-    <script src="http://code.jquery.com/jquery-1.10.2.min.js"></script>
-    <script src="http://d3js.org/d3.v3.min.js"></script>
-</head>
-
-<body>
-
-<div class="reveal">
-
-<!-- Any section element inside of this container is displayed as a slide -->
-<div class="slides">
-<section>
-    <h1>WildFly Security</h1>
-
-    <h3>Authentication and Authorization SPIs</h3>
-
-    <p>
-        <small><em>Presentation Prepared By:</em><br>David M. Lloyd &lt;<a href="mailto:david.lloyd@redhat.com">david.lloyd@redhat.com</a>&gt;</small>
-    </p>
-</section>
-
-<section>
-    <h2>Overview</h2>
-    <ul>
-        <li>
-            Requirements
-            <ul>
-                <li>Local authentication</li>
-                <li>Network authentication</li>
-                <li>Where JAAS falls short</li>
-                <li>A new SPI</li>
-            </ul>
-        </li>
-        <li>
-            Server-side Authentication SPI
-            <ul>
-                <li>Authentication process</li>
-                <li>Authorization process</li>
-                <li>Role mapping</li>
-            </ul>
-        </li>
-        <li>
-            Network Protocol Support
-            <ul>
-                <li>SASL</li>
-                <li>TLS</li>
-                <li>HTTP</li>
-            </ul>
-        </li>
-        <li>
-            Identity Context
-            <ul>
-                <li>Local and remote identities</li>
-                <li>Remote identity propagation</li>
-                <li>Remote credential propagation with Kerberos</li>
-            </ul>
-        </li>
-    </ul>
-
-    <aside class="notes">
-    </aside>
-</section>
-
-<section>
-    <h2>Local authentication</h2>
-    <p class="fragment">JAAS supports local authentication...</p>
-    <p class="fragment">...in fact that's <em>all</em> that JAAS supports*</p>
-    <div align="center">
-        <svg width="800" height="500">
-            <svg class="fragment">
-                <rect x="10" y="10" width="780" height="380" rx="10" ry="10" stroke="#ffffff" stroke-width="0.1em"></rect>
-                <text x="40" y="50" fill="#FFFFFF" font-size="24pt">JVM</text>
-            </svg>
-            <svg class="fragment">
-                <rect x="30" y="70" width="200" height="300" rx="8" ry="8" fill="#225511" stroke="#FFFFFF" stroke-width="0.1em"></rect>
-                <text x="40" y="100" fill="#FFFFFF" font-size="16pt">JAAS Client</text>
-                <text x="40" y="120" fill="#FFFFFF" font-size="11pt">(LoginContext user)</text>
-            </svg>
-            <svg class="fragment">
-                <rect x="570" y="70" width="200" height="300" rx="8" ry="8" fill="#551122" stroke="#FFFFFF" stroke-width="0.1em"></rect>
-                <text x="580" y="100" fill="#FFFFFF" font-size="16pt">JAAS Server</text>
-                <text x="580" y="120" fill="#FFFFFF" font-size="11pt">(LoginModule impl)</text>
-            </svg>
-            <svg class="fragment">
-                <rect x="240" y="70" height="30" width="200" fill="#5555ff" stroke="#ffffff" stroke-width="0.05em" rx="8" ry="8"></rect>
-                <text x="250" y="90" fill="#FFFFFF" font-size="11pt">
-                    I'd like to log in this Subject
-                </text>
-            </svg>
-            <svg class="fragment">
-                <rect x="380" y="110" height="30" width="180" fill="#ff5555" stroke="#ffffff" stroke-width="0.05em" rx="8" ry="8"></rect>
-                <text x="390" y="130" fill="#FFFFFF" font-size="11pt">
-                    Provide your user name
-                </text>
-            </svg>
-            <svg class="fragment">
-                <rect x="240" y="150" height="30" width="60" fill="#5555ff" stroke="#ffffff" stroke-width="0.05em" rx="8" ry="8"></rect>
-                <text x="250" y="170" fill="#FFFFFF" font-size="11pt">
-                    "Lucy"
-                </text>
-            </svg>
-            <svg class="fragment">
-                <rect x="390" y="190" height="30" width="170" fill="#ff5555" stroke="#ffffff" stroke-width="0.05em" rx="8" ry="8"></rect>
-                <text x="400" y="210" fill="#FFFFFF" font-size="11pt">
-                    Provide your password
-                </text>
-            </svg>
-            <svg class="fragment">
-                <rect x="240" y="230" height="30" width="120" fill="#5555ff" stroke="#ffffff" stroke-width="0.05em" rx="8" ry="8"></rect>
-                <text x="250" y="250" fill="#FFFFFF" font-size="11pt">
-                    "P4ssw0rd123"
-                </text>
-            </svg>
-            <svg class="fragment">
-                <rect x="350" y="270" height="30" width="210" fill="#ff5555" stroke="#ffffff" stroke-width="0.05em" rx="8" ry="8"></rect>
-                <text x="360" y="290" fill="#FFFFFF" font-size="11pt">
-                    OK I've updated your Subject
-                </text>
-            </svg>
-
-        </svg>
-    </div>
-</section>
-
-<section>
-    <section>
-        <h2>Supported SASL Mechanisms</h2>
-    </section>
-
-    <section>
-        <h2>Supported SASL Mechanisms</h2>
+<html>
+    <head lang="en">
+        <meta charset="UTF-8">
+        <title>Presentations • David M. Lloyd</title>
+    </head>
+    <body>
+        Presentations by topic:
         <ul>
-            <li class="fragment"><b>ANONYMOUS</b>: Explicitly request the anonymous identity</li>
-            <li class="fragment"><b>PLAIN</b>: Sends username and password across the wire in the clear, just like JAAS <em class="fragment">(Not recommended!)</em></li>
-            <li class="fragment"><b>EXTERNAL</b>: Use the authenticated identity of the outer security layer (e.g. TLS client cert)</li>
-            <li class="fragment"><b>DIGEST-MD5</b>: Protects username/password, but is <em>obsolete</em></li>
-            <li class="fragment"><b>SCRAM-SHA-*</b>: Protects username/password with a strong algorithm</li>
+            <li><a href="security/index.html">Security meeting notes</a></li>
         </ul>
-    </section>
-</section>
-
-
-<section>
-<pre><code data-trim contenteditable>
-    function linkify( selector ) {
-        if( supports3DTransforms ) {
-
-            var nodes = document.querySelectorAll( selector );
-
-            for( var i = 0, len = nodes.length; i &lt; len; i++ ) {
-                var node = nodes[i];
-
-                if( !node.className ) {
-                    node.className += ' roll';
-                }
-            }
-        }
-    }
-</code></pre>
-</section>
-
-</div>
-
-</div>
-
-<script src="lib/js/head.min.js"></script>
-<script src="js/reveal.min.js"></script>
-
-<script>
-
-    // Full list of configuration options available here:
-    // https://github.com/hakimel/reveal.js#configuration
-    Reveal.initialize({
-        controls: true,
-        progress: true,
-        history: true,
-        center: true,
-        backgroundTransition: 'fade',
-
-        theme: Reveal.getQueryHash().theme, // available themes are in /css/theme
-        transition: Reveal.getQueryHash().transition || 'default', // default/cube/page/concave/zoom/linear/fade/none
-
-        // Parallax scrolling
-        // parallaxBackgroundImage: 'https://s3.amazonaws.com/hakim-static/reveal-js/reveal-parallax-1.jpg',
-        // parallaxBackgroundSize: '2100px 900px',
-
-        // Optional libraries used to extend on reveal.js
-        dependencies: [
-            { src: 'lib/js/classList.js', condition: function () {
-                return !document.body.classList;
-            } },
-            { src: 'plugin/markdown/marked.js', condition: function () {
-                return !!document.querySelector('[data-markdown]');
-            } },
-            { src: 'plugin/markdown/markdown.js', condition: function () {
-                return !!document.querySelector('[data-markdown]');
-            } },
-            { src: 'plugin/highlight/highlight.js', async: true, callback: function () {
-                hljs.initHighlightingOnLoad();
-            } },
-            { src: 'plugin/zoom-js/zoom.js', async: true, condition: function () {
-                return !!document.body.classList;
-            } },
-            { src: 'plugin/notes/notes.js', async: true, condition: function () {
-                return !!document.body.classList;
-            } }
-        ]
-    });
-
-</script>
-
-</body>
+    </body>
 </html>
