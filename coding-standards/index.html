@@ -247,6 +247,29 @@
     </section>
 
     <section>
+        <h1>Exceptions: Flow Control</h1>
+        Do this:
+        <pre><code class="java" contenteditable>
+private Exception makeException(String blah) {
+    return new Exception(blah)
+}
+
+    // later...
+    throw makeException(blah);
+        </code></pre>
+        Not this:
+        <pre><code class="java" contenteditable>
+private void throwException(String blah) throws Exception {
+    throw new Exception(blah)
+}
+
+    // later...
+    throwException(blah);
+    throw new RuntimeException("???");
+        </code></pre>
+    </section>
+
+    <section>
         <h1>Style</h1>
         <ul>
             <li>
