@@ -13,7 +13,7 @@ body {
   background-color: #111111; }
 
 .reveal {
-  font-family: "Liberation Sans", sans-serif;
+  font-family: "DejaVu Sans", sans-serif;
   font-size: 30px;
   font-weight: normal;
   letter-spacing: -0.02em;
@@ -25,7 +25,7 @@ body {
   text-shadow: none; }
 
 .reveal code {
-  font-family: "Liberation Mono", monospace;
+  font-family: "DejaVu Sans Mono", monospace;
 }
 
 /*********************************************
