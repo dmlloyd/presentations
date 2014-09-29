@@ -96,6 +96,15 @@
     </section>
 
     <section>
+        <h1>API: Synchronization</h1>
+        <ul>
+            <li>Synchronization should never be a part of a method's API contract</li>
+            <li>Therefore, the synchronized method modifier should never be used</li>
+            <li>Particularly, don't blindly synchronize MSC service start/stop</li>
+        </ul>
+    </section>
+
+    <section>
         <h1>JavaDoc</h1>
         <ul>
             <li>Every API member must have JavaDoc</li>
@@ -406,6 +415,7 @@ private void throwException(String blah) throws Exception {
         <ul>
             <li>Do not store ServiceControllers, ServiceContainers, etc. in static fields</li>
             <li>Do not directly access the service registry from services</li>
+            <li>Do not blindly put synchronized on your start and stop method</li>
             <li>All services <em>must</em> be <b>restartable</b>, i.e. must be able to be stopped and started again independently of any other consideration</li>
         </ul>
     </section>
