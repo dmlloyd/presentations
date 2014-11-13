@@ -1,0 +1,346 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+
+    <title>All About Security Managers</title>
+
+    <meta name="description" content="All About Security Managers">
+    <meta name="author" content="David M. Lloyd">
+
+    <meta name="apple-mobile-web-app-capable" content="yes"/>
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+    <link rel="stylesheet" href="css/reveal.min.css">
+    <link rel="stylesheet" href="css/theme/night.css" id="theme">
+
+    <!-- For syntax highlighting -->
+    <link rel="stylesheet" href="lib/css/zenburn.css">
+
+    <!-- If the query includes 'print-pdf', include the PDF print sheet -->
+    <script>
+        if (window.location.search.match(/print-pdf/gi)) {
+            var link = document.createElement('link');
+            link.rel = 'stylesheet';
+            link.type = 'text/css';
+            link.href = 'css/print/pdf.css';
+            document.getElementsByTagName('head')[0].appendChild(link);
+        }
+    </script>
+
+    <!--[if lt IE 9]>
+    <script src="lib/js/html5shiv.js"></script>
+    <![endif]-->
+
+    <script src="http://code.jquery.com/jquery-1.10.2.min.js"></script>
+</head>
+
+<body>
+
+<div class="reveal">
+
+<!-- Any section element inside of this container is displayed as a slide -->
+<div class="slides">
+    <section>
+        <h1>The Security Manager</h1>
+
+        <h3>Everything you never wanted to know but have been forced to ask</h3>
+
+        <p>
+            <small><em>Presentation Prepared By:</em><br>David M. Lloyd &lt;<a href="mailto:david.lloyd@redhat.com">david.lloyd@redhat.com</a>&gt;</small>
+        </p>
+    </section>
+
+    <section>
+        <h2>What is it good for?</h2>
+        <ul class="fragment">
+            <li>
+                Protecting against access to certain JVM facilities...
+                <ul class="fragment">
+                    <li>...like <code class="java">System.exit()</code></li>
+                </ul>
+            </li>
+            <li class="fragment">Restricting filesystem access (as long as only JDK APIs are used)</li>
+            <li class="fragment">Restricting network access (directly or via services like JDBC, HTTP, etc.)</li>
+            <li class="fragment">Restricting access to security facilities (JAAS authentication, etc.)</li>
+            <li class="fragment">Running <em>trusted</em> or <em>mostly trusted</em> code</li>
+        </ul>
+
+        <aside class="notes">
+        </aside>
+    </section>
+
+    <section>
+        <h2>What is it <em>not</em> good for?</h2>
+        <ul class="fragment">
+            <li>Cannot protect against runaway CPU consumption</li>
+            <li class="fragment">Cannot restrict memory consumption</li>
+            <li class="fragment">Running <em>truly untrusted</em> code</li>
+            <li class="fragment">Only the OS can truly provide this protection</li>
+        </ul>
+
+        <aside class="notes">
+        </aside>
+    </section>
+
+    <section>
+        <h2>Why use it?</h2>
+        <ul class="fragment">
+            <li>Some orgs have hard requirements for various reasons</li>
+            <li class="fragment">Common Criteria certification</li>
+            <li class="fragment">Can be used to catch bugs, theoretically</li>
+        </ul>
+
+        <aside class="notes">
+        </aside>
+    </section>
+
+    <section>
+        <h2>How do you use it?</h2>
+        <ol class="fragment">
+            <li>
+                Establish a security policy
+                <ul class="fragment">
+                    <li>Use a <a href="https://docs.oracle.com/javase/8/docs/technotes/guides/security/permissions.html">standard policy file</a></li>
+                    <li class="fragment">Use JBoss Modules <code class="xml">&lt;permissions&gt;</code> blocks in your modules</li>
+                    <li class="fragment">Use Java EE 7 <code>permissions.xml</code> files in an EE 7 container</li>
+                    <li class="fragment">
+                        Use Java EE 7 specified, container-defined global default permission policies
+                        <ul class="fragment">
+                            <li>In WildFly, this lives in the <code>security-manager</code> subsystem</li>
+                        </ul>
+                    </li>
+                </ul>
+            </li>
+            <li class="fragment">
+                Enable the security manager
+                <ul class="fragment">
+                    <li>In a standalone JVM, <code>-Djava.security.manager</code></li>
+                    <li class="fragment">In JBoss Modules, <code>-secmgr</code></li>
+                    <li class="fragment">In WildFly 8, just configure the <code>security-manager</code> subsystem</li>
+                    <li class="fragment">
+                        In WildFly 9+, <code>-secmgr</code> (with or without the subsystem)
+                        <ul class="fragment">
+                            <li><code>permissions.xml</code> only works with the subsystem though!</li>
+                        </ul>
+                    </li>
+                </ul>
+            </li>
+        </ol>
+
+        <aside class="notes">
+        </aside>
+    </section>
+
+    <section id="perm-assign">
+        <h2>How are permissions assigned?</h2>
+
+        <ul class="fragment">
+            <li>
+                Every class is associated with a <em>protection domain</em>, which consists of:
+                <ul class="fragment">
+                    <li>A link to the defining class loader of the class</li>
+                    <li class="fragment">A <em>code source</em> (a URL that identifies the code)</li>
+                    <li class="fragment">A <em>permission collection</em> (a set of assigned permissions)</li>
+                    <li class="fragment">An array of principals, specific to JAAS</li>
+                </ul>
+            </li>
+            <li class="fragment">
+                The protection domain permissions are built from the security policy (whatever its source)
+            </li>
+        </ul>
+    </section>
+
+    <section id="perm-check">
+        <h2>How are permissions checked?</h2>
+        <ul class="fragment">
+            <li>The security manager examines the current <em>access control context</em></li>
+            <li class="fragment">
+                This is the accumulation of the protection domains of classes from the call stack
+                <ul class="fragment">
+                    <li>...stopping only at the last call to <a href="https://docs.oracle.com/javase/8/docs/api/index.html?java/security/AccessController.html#doPrivileged-java.security.PrivilegedAction-">AccessController.doPrivileged()</a></li>
+                    <li class="fragment">The access control context is inherited to newly created threads</li>
+                </ul>
+            </li>
+            <li class="fragment">The permission check passes only if <em>all</em> the security domains in the
+            access control context have granted the permission</li>
+        </ul>
+    </section>
+
+    <section id="diagnose-access">
+        <h2>How do you diagnose access problems?</h2>
+
+        <ul class="fragment">
+            <li>
+                <code>AccessControlException</code>
+                <ul class="fragment">
+                    <li>Information is very minimal, typically something like:
+                        <pre><code class="java">access denied: java.lang.RuntimePermission("blah", "")</code></pre>
+                    </li>
+                    <li class="fragment">There is a "debug" facility... but it's useless</li>
+                </ul>
+            </li>
+        </ul>
+        <aside class="notes">
+        </aside>
+    </section>
+
+    <section>
+        <h2>WildFly Security Manager to the rescue</h2>
+
+        <ul class="fragment">
+            <li>Gives permission that failed, the code source that lacked the permission, and its class loader in the exception message</li>
+            <li class="fragment">Logs <em>all</em> access violations (with complete stack trace) at level <code>DEBUG</code> in category <code>org.wildfly.security.access</code></li>
+        </ul>
+        <aside class="notes">
+        </aside>
+    </section>
+
+    <section id="solve-access">
+        <h2>How do you <em>solve</em> access problems?</h2>
+
+        <ol class="fragment">
+            <li>Identify the code performing the checked action</li>
+            <li class="fragment">Identify the code source of the denial</li>
+            <li class="fragment">Choose one resolution:
+                <ul class="fragment">
+                    <li>Grant the missing permission to the denied code source</li>
+                    <li class="fragment">
+                        Replace your common unprivileged operation with one of the privileged versions from the WildFly Security Manager
+                        <ul class="fragment">
+                            <li><code class="java">getPropertyPrivileged</code></li>
+                            <li><code class="java">getClassLoaderPrivileged</code></li>
+                            <li><code class="java">getCurrentContextClassLoaderPrivileged</code></li>
+                            <li class="java">These only work when the WildFly Security Manager is the active Security Manager</li>
+                        </ul>
+                    </li>
+                    <li class="fragment">
+                        Add a <code>doPrivileged</code> block into the intervening call stack
+                        <ul class="fragment">
+                            <li>Carefully</li>
+                            <li class="fragment">And only as a last resort</li>
+                        </ul>
+                    </li>
+                </ul>
+            </li>
+        </ol>
+    </section>
+
+    <section id="safe-privilege">
+        <h2>Being safe with privilege</h2>
+        <ul class="fragment">
+            <li>
+                It is easy to accidentally defeat the security manager
+                <ul class="fragment">
+                    <li>Also known as a <em>security vulnerability</em></li>
+                </ul>
+            </li>
+            <li class="fragment">For better or worse, many users rely on the security manager to actually provide some measure of security</li>
+            <li class="fragment">There are some important guidelines to follow to avoid introducing vulnerabilities</li>
+        </ul>
+    </section>
+
+    <section>
+        <h2>Being safe with privilege: Guidelines</h2>
+        <ul class="fragment">
+            <li>
+                Never perform a privileged action that isn't in turn protected by another permission check
+                <ul class="fragment">
+                    <li>Or a very good reason</li>
+                </ul>
+            </li>
+            <li class="fragment">
+                Never execute privileged actions from strangers
+                <ul class="fragment">
+                    <li>You cannot assume that potentially harmful privileged actions only come from untrusted code</li>
+                    <li class="fragment">We ship dozens of them out of the box as public classes in code bases routinely granted <a href="https://docs.oracle.com/javase/8/docs/api/index.html?java/security/AllPermission.html">AllPermission</a></li>
+                </ul>
+            </li>
+            <li class="fragment">
+                Never assume AccessControlContexts are "honest"
+                <ul class="fragment">
+                    <li>They are <a href="https://docs.oracle.com/javase/8/docs/api/index.html?java/security/AccessControlContext.html#AccessControlContext-java.security.ProtectionDomain:A-">trivially constructable</a> with arbitrary protection domains</li>
+                    <li class="fragment">Untrusted ACCs are particularly dangerous in combination with untrusted privileged actions</li>
+                    <li class="fragment">If you need a captured ACC, capture it yourself with <a href="https://docs.oracle.com/javase/8/docs/api/index.html?java/security/AccessController.html#getContext--">AccessController.getContext()</a></li>
+                </ul>
+            </li>
+        </ul>
+        <aside class="notes">
+            <ul>
+                <li>example: a method to access arbitrary files on the file system</li>
+            </ul>
+        </aside>
+    </section>
+
+    <section id="java8">
+        <h2>Security Manager related features in Java 8</h2>
+        <ul class="fragment">
+            <li><a href="https://docs.oracle.com/javase/8/docs/api/index.html?java/security/AccessController.html#doPrivileged-java.security.PrivilegedAction-java.security.AccessControlContext-java.security.Permission...-">Limited doPrivileged</a> - run privileged actions with only a subset of your total possible permissions</li>
+        </ul>
+    </section>
+    <section id="java9">
+        <h2>Security Manager related features in Java 9</h2>
+        <ul class="fragment">
+            <li>Not much determined yet...</li>
+            <li class="fragment">It is likely that protection domain permissions will be bound to <em>whole modules</em> instead of individual classes (similarly to how JBoss Modules behaves)</li>
+            <li class="fragment">However it is also likely that individual classes will be able to be "lowered" to a more restricted permission set</li>
+        </ul>
+    </section>
+    <section id="end">
+        <h1>That's it!</h1>
+    </section>
+</div>
+
+</div>
+
+<script src="lib/js/head.min.js"></script>
+<script src="js/reveal.min.js"></script>
+
+<script>
+
+    // Full list of configuration options available here:
+    // https://github.com/hakimel/reveal.js#configuration
+    Reveal.initialize({
+        controls: true,
+        progress: true,
+        history: true,
+        center: true,
+        backgroundTransition: 'fade',
+
+        theme: Reveal.getQueryHash().theme, // available themes are in /css/theme
+        transition: Reveal.getQueryHash().transition || 'default', // default/cube/page/concave/zoom/linear/fade/none
+
+        // Parallax scrolling
+        // parallaxBackgroundImage: 'https://s3.amazonaws.com/hakim-static/reveal-js/reveal-parallax-1.jpg',
+        // parallaxBackgroundSize: '2100px 900px',
+
+        // Optional libraries used to extend on reveal.js
+        dependencies: [
+            { src: 'lib/js/classList.js', condition: function () {
+                return !document.body.classList;
+            } },
+            { src: 'plugin/markdown/marked.js', condition: function () {
+                return !!document.querySelector('[data-markdown]');
+            } },
+            { src: 'plugin/markdown/markdown.js', condition: function () {
+                return !!document.querySelector('[data-markdown]');
+            } },
+            { src: 'plugin/highlight/highlight.js', async: true, callback: function () {
+                hljs.initHighlightingOnLoad();
+            } },
+            { src: 'plugin/zoom-js/zoom.js', async: true, condition: function () {
+                return !!document.body.classList;
+            } },
+            { src: 'plugin/notes/notes.js', async: true, condition: function () {
+                return !!document.body.classList;
+            } }
+        ]
+    });
+
+</script>
+
+</body>
+</html>
