@@ -119,10 +119,11 @@
                 Enable the security manager
                 <ul class="fragment">
                     <li>In a standalone JVM, <code>-Djava.security.manager</code></li>
-                    <li class="fragment">In JBoss Modules, <code>-secmgr</code></li>
+                    <li class="fragment">In a standalone JBoss Modules application, <code>-secmgr</code></li>
+                    <li class="fragment">In EAP 6.4 or later 6.x, set SECMGR to "true" in standalone.conf</li>
                     <li class="fragment">In WildFly 8, just configure the <code>security-manager</code> subsystem</li>
                     <li class="fragment">
-                        In WildFly 9+, <code>-secmgr</code> (with or without the subsystem)
+                        In WildFly 9+ and EAP 7+, pass <code>-secmgr</code> to the start script (with or without the subsystem configured)
                         <ul class="fragment">
                             <li><code>permissions.xml</code> only works with the subsystem though!</li>
                         </ul>
