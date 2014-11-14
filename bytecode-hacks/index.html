@@ -1,0 +1,245 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+
+    <title>Bytecode Hacks: Bridger / Seven2Six</title>
+
+    <meta name="description" content="Bytecode Hacks: Bridger / Seven2Six">
+    <meta name="author" content="David M. Lloyd">
+
+    <meta name="apple-mobile-web-app-capable" content="yes"/>
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+    <link rel="stylesheet" href="css/reveal.min.css">
+    <link rel="stylesheet" href="css/theme/night.css" id="theme">
+
+    <!-- For syntax highlighting -->
+    <link rel="stylesheet" href="lib/css/zenburn.css">
+
+    <!-- If the query includes 'print-pdf', include the PDF print sheet -->
+    <script>
+        if (window.location.search.match(/print-pdf/gi)) {
+            var link = document.createElement('link');
+            link.rel = 'stylesheet';
+            link.type = 'text/css';
+            link.href = 'css/print/pdf.css';
+            document.getElementsByTagName('head')[0].appendChild(link);
+        }
+    </script>
+
+    <!--[if lt IE 9]>
+    <script src="lib/js/html5shiv.js"></script>
+    <![endif]-->
+
+    <script src="http://code.jquery.com/jquery-1.10.2.min.js"></script>
+</head>
+
+<body>
+
+<div class="reveal">
+
+<!-- Any section element inside of this container is displayed as a slide -->
+<div class="slides">
+    <section>
+        <h1>Bytecode Hacks</h1>
+        <h2>Bridger and Seven2Six</h2>
+
+        <p>
+            <small><em>Presentation Prepared By:</em><br>David M. Lloyd &lt;<a href="mailto:david.lloyd@redhat.com">david.lloyd@redhat.com</a>&gt;</small>
+        </p>
+    </section>
+
+    <section>
+        <h2>Bridger: The Problem</h2>
+        <ul class="fragment">
+            <li>
+                You need to retain binary compatibility, but...
+                <ul class="fragment">
+                    <li>You have a method whose return type you want to narrow or broaden</li>
+                    <li class="fragment">
+                        You want to change the return type of a method to something completely different
+                        <ul class="fragment">
+                            <li>For example, changing a <code>void</code> method to support call chaining</li>
+                        </ul>
+                    </li>
+                    <li class="fragment">You want to remove a deprecated method</li>
+                </ul>
+            </li>
+        </ul>
+
+        <aside class="notes">
+        </aside>
+    </section>
+
+    <section>
+        <h2>Bridger: The Solution</h2>
+        <ul class="fragment">
+            <li>Bridger executes a name transformation on all methods containing the string "$$bridge" in their name</li>
+            <li class="fragment">The "$$bridge" string (and everything after) is dropped</li>
+            <li class="fragment">
+                The method is marked ACC_BRIDGE and ACC_SYNTHETIC
+                <ul class="fragment">
+                    <li>This means that <code>javac</code> won't see it</li>
+                    <li class="fragment"><em>But</em> code compiled against that signature will still link against it at runtime</li>
+                </ul>
+            </li>
+            <li class="fragment">Thus all the aforementioned problems can be easily solved</li>
+        </ul>
+    </section>
+
+    <section>
+        <h2>Bridger: Example 1</h2>
+<pre contenteditable="true"><code class="java">
+    /**
+     * This method returned Object in a previous version.
+     */
+    public String getValue() {
+        return blah.toString();
+    }
+
+    /**
+     * This gets changed to "getValue()" and is hidden from javac.
+     * But, classes compiled against the old version will link against
+     * this one instead at run time.
+     */
+    public Object getValue$$bridge() {
+        return getValue();
+    }
+</code></pre>
+    </section>
+
+    <section>
+        <h2>Bridger: Example 2</h2>
+<pre contenteditable="true"><code class="java">
+    /**
+     * This method returned void in a previous version.
+     */
+    public Builder setName(String name) {
+        this.name = name;
+        return this;
+    }
+
+    /**
+     * This gets changed to "setName()" and is hidden from javac.
+     * But, classes compiled against the void-returning old version
+     * will link against this one instead at run time.
+     */
+    public void setName$$bridge(String name) {
+        this.name = name;
+    }
+</code></pre>
+    </section>
+
+    <section>
+        <h2>Seven2Six: The Problem</h2>
+
+        <ul class="fragment">
+            <li>Someone gave you a PR riddled with diamond operators but you need to backport it to your Java 6 branch</li>
+            <li class="fragment">You need to support Java 6 but you really want String switch, try-with-resources, etc.</li>
+        </ul>
+    </section>
+
+    <section>
+        <h2>Seven2Six: The Solution</h2>
+
+        <ul class="fragment">
+            <li>Translates Java 7 bytecode to Java 6</li>
+            <li class="fragment">
+                Fully supports:
+                <ul class="fragment">
+                    <li>Diamond operator</li>
+                    <li class="fragment">String switch</li>
+                    <li class="fragment">Improved type inference</li>
+                    <li class="fragment">New numeric literals (binary constants, underscore separators)</li>
+                </ul>
+            </li>
+            <li class="fragment">
+                Mostly supports:
+                <ul class="fragment">
+                    <li>Try-with-resources (suppressed exceptions are dropped when running on Java 6, but work as expected on Java 7)</li>
+                    <li class="fragment">
+                        Multi-catch blocks (with one caveat)
+                        <ul class="fragment">
+                            <li>If the compiler detects a <em>common superclass</em> of more than one of the exception options, it will silently link against it</li>
+                            <li class="fragment">If that class is missing when running Java 6, you will get errors at run time</li>
+                        </ul>
+                    </li>
+                </ul>
+            </li>
+            <li class="fragment">
+                Does <em>not</em> support:
+                <ul class="fragment">
+                    <li>The <code>invokedynamic</code> instruction</li>
+                    <li class="fragment">Any JDK 7-specific APIs</li>
+                </ul>
+            </li>
+        </ul>
+    </section>
+
+    <section>
+        <h2>Get this stuff</h2>
+        <ul class="fragment">
+            <li>Get bridger from <a href="https://github.com/dmlloyd/bridger">GitHub</a> or Maven as a plugin (org.jboss.bridger:bridger:1.0.Final)</li>
+            <li class="fragment">Get seven2six from <a href="https://github.com/dmlloyd/seven2six">GitHub</a> or Maven as a plugin (org.jboss.seven2six:seven2six:1.1.Final)</li>
+        </ul>
+    </section>
+
+    <section id="end">
+        <h1>That's it!</h1>
+    </section>
+</div>
+
+</div>
+
+<script src="lib/js/head.min.js"></script>
+<script src="js/reveal.min.js"></script>
+
+<script>
+
+    // Full list of configuration options available here:
+    // https://github.com/hakimel/reveal.js#configuration
+    Reveal.initialize({
+        controls: true,
+        progress: true,
+        history: true,
+        center: true,
+        backgroundTransition: 'fade',
+
+        theme: Reveal.getQueryHash().theme, // available themes are in /css/theme
+        transition: Reveal.getQueryHash().transition || 'default', // default/cube/page/concave/zoom/linear/fade/none
+
+        // Parallax scrolling
+        // parallaxBackgroundImage: 'https://s3.amazonaws.com/hakim-static/reveal-js/reveal-parallax-1.jpg',
+        // parallaxBackgroundSize: '2100px 900px',
+
+        // Optional libraries used to extend on reveal.js
+        dependencies: [
+            { src: 'lib/js/classList.js', condition: function () {
+                return !document.body.classList;
+            } },
+            { src: 'plugin/markdown/marked.js', condition: function () {
+                return !!document.querySelector('[data-markdown]');
+            } },
+            { src: 'plugin/markdown/markdown.js', condition: function () {
+                return !!document.querySelector('[data-markdown]');
+            } },
+            { src: 'plugin/highlight/highlight.js', async: true, callback: function () {
+                hljs.initHighlightingOnLoad();
+            } },
+            { src: 'plugin/zoom-js/zoom.js', async: true, condition: function () {
+                return !!document.body.classList;
+            } },
+            { src: 'plugin/notes/notes.js', async: true, condition: function () {
+                return !!document.body.classList;
+            } }
+        ]
+    });
+
+</script>
+
+</body>
+</html>
