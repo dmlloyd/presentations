@@ -13,7 +13,7 @@ body {
   background-color: #111111; }
 
 .reveal {
-  font-family: "DejaVu Sans", sans-serif;
+  font-family: "Open Sans", sans-serif;
   font-size: 30px;
   font-weight: normal;
   letter-spacing: -0.02em;
@@ -23,10 +23,6 @@ body {
   color: white;
   background: #e7ad52;
   text-shadow: none; }
-
-.reveal code {
-  font-family: "DejaVu Sans Mono", monospace;
-}
 
 /*********************************************
  * HEADERS
@@ -39,11 +35,10 @@ body {
 .reveal h6 {
   margin: 0 0 20px 0;
   color: #eeeeee;
-  font-family: "Liberation Sans", sans-serif;
+  font-family: "Montserrat", Impact, sans-serif;
   line-height: 0.9em;
   letter-spacing: -0.03em;
   text-transform: none;
-  font-weight: normal;
   text-shadow: none; }
 
 .reveal h1 {

@@ -54,36 +54,36 @@
         </p>
     </section>
 
-    <section>
-        <h1>Source files</h1>
-        <ul>
+    <section id="sourcefiles">
+        <h2>Source files</h2>
+        <ul class="fragment">
             <li>
                 Use UTF-8 encoding
-                <ul>
+                <ul class="fragment">
                     <li>Make sure your IDE didn't choose MacRoman, CP1252, ISO‑8859‑1, etc.</li>
                 </ul>
             </li>
-            <li>Avoid <code>\uXXXX</code> as much as possible</li>
-            <li>Avoid putting multiple classes into one source file</li>
-            <li>Tell your IDE to trim trailing whitespace (but only on modified lines)</li>
-            <li>Use common sense - someone will have to read your code, eventually</li>
+            <li class="fragment">Avoid <code>\uXXXX</code> as much as possible</li>
+            <li class="fragment">Avoid putting multiple classes into one source file</li>
+            <li class="fragment">Tell your IDE to trim trailing whitespace (but only on modified lines)</li>
+            <li class="fragment">Use common sense - someone will have to read your code, eventually</li>
         </ul>
     </section>
 
-    <section>
-        <h1>API</h1>
-        <ul>
+    <section id="api">
+        <h2>API</h2>
+        <ul class="fragment">
             <li>
                 Every public class and public/protected member is API
-                <ul><li><em>Exception:</em> specifically excluded paths for modules</li></ul>
+                <ul class="fragment"><li><em>Exception:</em> specifically excluded paths for modules</li></ul>
             </li>
-            <li>
+            <li class="fragment">
                 Every bit of API <em>must</em> have a clearly defined behavioral contract
-                <ul>
+                <ul class="fragment">
                     <li>Security expectations: required permissions, privileges gained or lost</li>
-                    <li>Validation expectations: valid ranges, values, or rules for every parameter, clear definition of return values</li>
-                    <li>Compatibility guarantees (forwards and backwards)</li>
-                    <li>All <em>explicitly</em> thrown Exceptions (including runtime) with reasons</li>
+                    <li class="fragment">Validation expectations: valid ranges, values, or rules for every parameter, clear definition of return values</li>
+                    <li class="fragment">Compatibility guarantees (forwards and backwards)</li>
+                    <li class="fragment">All <em>explicitly</em> thrown Exceptions (including runtime) with reasons</li>
                 </ul>
             </li>
         </ul>
@@ -96,37 +96,37 @@
     </section>
 
     <section>
-        <h1>API: Synchronization</h1>
-        <ul>
+        <h2>API: Synchronization</h2>
+        <ul class="fragment">
             <li>Synchronization should never be a part of a method's API contract</li>
-            <li>Therefore, the synchronized method modifier should never be used</li>
-            <li>Particularly, don't blindly synchronize MSC service start/stop</li>
+            <li class="fragment">Therefore, the synchronized method modifier should not be used</li>
+            <li class="fragment">Particularly, don't blindly synchronize MSC service start/stop</li>
         </ul>
     </section>
 
-    <section>
-        <h1>JavaDoc</h1>
-        <ul>
+    <section id="javadoc">
+        <h2>JavaDoc</h2>
+        <ul class="fragment">
             <li>Every API member must have JavaDoc</li>
-            <li>This includes all public classes, all public and protected members of API modules</li>
-            <li>Use proper grammar and spelling (use your IDE's spell check feature)</li>
-            <li>Include package JavaDoc and an overview.html page illustrating how to get started</li>
-            <li>Give users a good first impression</li>
+            <li class="fragment">This includes all public classes, all public and protected members of API modules</li>
+            <li class="fragment">Use proper grammar and spelling (use your IDE's spell check feature)</li>
+            <li class="fragment">Include package JavaDoc and an overview.html page illustrating how to get started</li>
+            <li class="fragment">Give users a good first impression</li>
         </ul>
     </section>
 
     <section>
-        <h1>JavaDoc (General)</h1>
-        <ul>
+        <h2>JavaDoc (General)</h2>
+        <ul class="fragment">
             <li>Type names should be {@link}s or {@code}s; keywords like <code>null</code>, <code>this</code>, <code>true</code>, and <code>false</code> should use {@code} always</li>
-            <li>
+            <li class="fragment">
                 Consider using APIviz for a visual overview of API modules
-                <ul><li>Make sure non-API things are excluded</li></ul>
+                <ul class="fragment"><li>Make sure non-API things are excluded</li></ul>
             </li>
-            <li>Document serializable representation</li>
-            <li>Remember @param for type parameters</li>
-            <li>Separate paragraphs with &lt;p&gt; tags (no closing tags please)</li>
-            <li>Avoid &lt;br&gt; and &amp;nbsp;</li>
+            <li class="fragment">Document serializable representation</li>
+            <li class="fragment">Remember @param for type parameters</li>
+            <li class="fragment">Separate paragraphs with &lt;p&gt; tags (no closing tags please)</li>
+            <li class="fragment">Avoid &lt;br&gt; and &amp;nbsp;</li>
         </ul>
 
         <aside class="notes">
@@ -138,15 +138,15 @@
     </section>
 
     <section>
-        <h1>JavaDoc (Types)</h1>
-        <ul>
+        <h2>JavaDoc (Types)</h2>
+        <ul class="fragment">
             <li>
                 First sentence is a noun phrase, e.g. "A connection to a remote peer."
-                <ul><li>Watch out for periods as they confuse the doclet, e.g. "e.g."</li></ul>
+                <ul class="fragment"><li>Watch out for periods as they confuse the doclet, e.g. "e.g."</li></ul>
             </li>
-            <li>Use basic HTML constructs idiomatically; don't go nuts</li>
-            <li>Author tags are OK</li>
-            <li>Since tags are OK <em>if</em> they are rigorously applied and maintained</li>
+            <li class="fragment">Use basic HTML constructs idiomatically; don't go nuts</li>
+            <li class="fragment">Author tags are OK</li>
+            <li class="fragment">Since tags are OK <em>if</em> they are rigorously applied and maintained</li>
         </ul>
 
         <aside class="notes">
@@ -160,7 +160,7 @@
     </section>
 
     <section>
-        <h1>JavaDoc (Code)</h1>
+        <h2>JavaDoc (Code)</h2>
         <ul>
             <li>Use this trick for code samples:</li>
         </ul>
@@ -183,19 +183,19 @@
     </section>
 
     <section>
-        <h1>JavaDoc (Methods)</h1>
-        <ul>
+        <h2>JavaDoc (Methods)</h2>
+        <ul class="fragment">
             <li>Document the <em>exact</em> behavior of methods</li>
-            <li>First sentence should be a complete sentence, e.g. "Read bytes from this channel."</li>
-            <li>Describe the inputs and outputs including their possible values</li>
-            <li>
+            <li class="fragment">First sentence should be a complete sentence, e.g. "Read bytes from this channel."</li>
+            <li class="fragment">Describe the inputs and outputs including their possible values</li>
+            <li class="fragment">
                 Parameters, return values, and exceptions should be single <b>direct object phrases</b> with no leading caps, no trailing punctuation
-                <ul>
+                <ul class="fragment">
                     <li>Right: "@param name the connection's name"</li>
                     <li>Wrong: "@param name The connection's name."</li>
-                    <li>Right: "@return a new connection instance"</li>
+                    <li class="fragment">Right: "@return a new connection instance"</li>
                     <li>Wrong: "@return Returns a new connection instance. It's super nifty."</li>
-                    <li>Do <em>not</em> write full paragraphs, just single phrases</li>
+                    <li class="fragment">Do <em>not</em> write full paragraphs, just single phrases</li>
                     <li>Details go in the method description</li>
                 </ul>
             </li>
@@ -203,62 +203,100 @@
     </section>
 
     <section>
-        <h1>JavaDoc (Constructors)</h1>
-        <ul>
+        <h2>JavaDoc (Constructors)</h2>
+        <ul class="fragment">
             <li>All constructors do the same thing: initialize one level of a new object instance</li>
-            <li>
+            <li class="fragment">
                 First sentence should nevertheless be a complete sentence
-                <ul><li>Example: "Construct a new instance."</li></ul>
+                <ul class="fragment"><li>Example: "Construct a new instance."</li></ul>
             </li>
-            <li>
+            <li class="fragment">
                 Otherwise, follow the same rules as methods
             </li>
         </ul>
     </section>
 
     <section>
-        <h1>JavaDoc (Fields)</h1>
-        <ul>
+        <h2>JavaDoc (Fields)</h2>
+        <ul class="fragment">
             <li>
                 First sentence is usually a <b>noun phrase</b>
-                <ul><li>Example: "The number of widgets on the snozzle."</li></ul>
+                <ul class="fragment"><li>Example: "The number of widgets on the snozzle."</li></ul>
             </li>
-            <li>
+            <li class="fragment">
                 Include any concurrency-specific information
-                <ul><li>For example: "Protected by synchronization on {@code this}."</li></ul>
+                <ul class="fragment"><li>For example: "Protected by synchronization on {@code this}."</li></ul>
             </li>
-            <li>Include serialization-specific information</li>
+            <li class="fragment">
+                Include serialization-specific information
+                <ul class="fragment"><li><code>@serial</code> tags</li></ul>
+            </li>
         </ul>
     </section>
 
     <section>
-        <h1>JavaDoc (I18n)</h1>
-        <ul>
+        <h2>JavaDoc (I18n)</h2>
+        <ul class="fragment">
             <li>I18n message interfaces are self-documenting and do not need additional JavaDoc</li>
-            <li>
+            <li class="fragment">
                 Good practice is to put message interfaces into a separate package
-                <ul>
+                <ul class="fragment">
                     <li>Exclude that package from JavaDoc</li>
-                    <li>Exclude that package directory in WildFly modules</li>
+                    <li class="fragment">Exclude that package directory in WildFly modules</li>
                 </ul>
             </li>
         </ul>
     </section>
 
-    <section>
-        <h1>Exceptions & Assert</h1>
-        <ul>
-            <li>Assertions are good</li>
-            <li>Only use them for invariants: <b>never</b> for validating anything a user can touch</li>
-            <li>User validation (i.e. parameter values) should normally use IllegalArgumentException or a subtype thereof</li>
-            <li>Do not use NPE for null parameter values</li>
+    <section id="correctness">
+        <h2>Design Principles: Correctness</h2>
+        <ul class="fragment">
+            <li>
+                Design for <em><a href="http://en.wikipedia.org/wiki/Correctness_%28computer_science%29">correctness</a></em>
+                <ul class="fragment">
+                    <li>Clear, unambiguous contracts</li>
+                    <li class="fragment">Carefully controlled concurrency guarantees</li>
+                    <li class="fragment">Simple abstractions</li>
+                    <li class="fragment">Well-defined encapsulation</li>
+                </ul>
+            </li>
+            <li class="fragment">A clean test suite is not a sufficient condition for correctness</li>
+            <li class="fragment">A correct program is possible to verify definitively</li>
         </ul>
     </section>
 
     <section>
-        <h1>Exceptions: Flow Control</h1>
+        <h2>Correctness and Security</h2>
+        <ul class="fragment">
+            <li>Programs designed for correctness are more likely to avoid the <a href="http://en.wikipedia.org/wiki/Weird_machine">weird machine</a> phenomenon
+            and other exploitable problems</li>
+        </ul>
+    </section>
+
+    <section>
+        <h2>Correctness and Contribution</h2>
+        <ul class="fragment">
+            <li>A contribution can fix a specific problem or add a specific functionality</li>
+            <li class="fragment">But each contribution must be designed and built with the correctness of the greater system in mind</li>
+            <li class="fragment">If you do not understand the contract of a construct, do not just "hope for the best"</li>
+            <li class="fragment">Don't <em>assume</em> something is correct; <em>know</em> it is correct</li>
+        </ul>
+    </section>
+
+    <section id="exceptions">
+        <h2>Exceptions & Assert</h2>
+        <ul class="fragment">
+            <li>Assertions are good</li>
+            <li class="fragment">Only use them for invariants: <b>never</b> for validating anything a user can touch</li>
+            <li class="fragment">User validation (i.e. parameter values) should normally use IllegalArgumentException or a subtype thereof</li>
+            <li class="fragment">Do not use NPE for null parameter values</li>
+        </ul>
+    </section>
+
+    <section>
+        <h2>Exceptions: Flow Control</h2>
         Do this:
-        <pre><code class="java" contenteditable>
+        <pre class="fragment"><code class="java" contenteditable>
 private Exception makeException(String blah) {
     return new Exception(blah)
 }
@@ -267,7 +305,7 @@ private Exception makeException(String blah) {
     throw makeException(blah);
         </code></pre>
         Not this:
-        <pre><code class="java" contenteditable>
+        <pre class="fragment"><code class="java" contenteditable>
 private void throwException(String blah) throws Exception {
     throw new Exception(blah)
 }
@@ -279,40 +317,40 @@ private void throwException(String blah) throws Exception {
     </section>
 
     <section>
-        <h1>Style</h1>
-        <ul>
+        <h2>Style</h2>
+        <ul class="fragment">
             <li>
                 Always mesh with the project you're coding in
-                <ul><li>Spacing, indentation, brace position, etc.</li></ul>
+                <ul class="fragment"><li>Spacing, indentation, brace position, etc.</li></ul>
             </li>
-            <li>Do not try to "fix" other projects' styles - it is never worth it</li>
-            <li>In particular, WildFly has IDE settings and templates included in the source tree</li>
+            <li class="fragment">Do not try to "fix" other projects' styles - it is never worth it</li>
+            <li class="fragment">In particular, WildFly has IDE settings and templates included in the source tree</li>
         </ul>
     </section>
 
     <section>
-        <h1>Concurrency</h1>
-        <ul>
+        <h2>Concurrency</h2>
+        <ul class="fragment">
             <li>Read <a href="http://jcip.net"><cite>Java Concurrency In Practice</cite></a></li>
-            <li>Understand and respect <a href="http://www.cs.umd.edu/~pugh/java/memoryModel/jsr-133-faq.html">the JMM</a></li>
-            <li>Do not prematurely optimize (or deoptimize)</li>
-            <li>Be ready and able to <em>prove</em> that your algorithm or operation is correct</li>
-            <li>If you're not sure, <b>ask</b>, or don't do it at all - even experts get it wrong!</li>
+            <li class="fragment">Understand and respect <a href="http://www.cs.umd.edu/~pugh/java/memoryModel/jsr-133-faq.html">the JMM</a></li>
+            <li class="fragment">Do not prematurely optimize (or deoptimize)</li>
+            <li class="fragment">Be ready and able to <em>prove</em> that your algorithm or operation is correct</li>
+            <li class="fragment">If you're not sure, <b>ask</b>, or don't do it at all - even experts get it wrong!</li>
         </ul>
     </section>
 
     <section>
-        <h1>Locks</h1>
-        <ul>
+        <h2>Locks</h2>
+        <ul class="fragment">
             <li>
                 Prefer synchronization over ReentrantLock
-                <ul><li>...unless you <em>need</em> a feature specific to Locks</li></ul>
+                <ul class="fragment"><li>...unless you <em>need</em> a feature specific to Locks</li></ul>
             </li>
-            <li>Use locks for protecting data <em>only</em> - not code</li>
-            <li>Prefer synchronized blocks over synchronized methods</li>
-            <li>
+            <li class="fragment">Use locks for protecting data <em>only</em> - not code</li>
+            <li class="fragment">Prefer synchronized blocks over synchronized methods</li>
+            <li class="fragment">
                 Use assertions:
-                <ul>
+                <ul class="fragment">
                     <li><code class="java">assert Thread.holdsLock(this);</code></li>
                     <li><code class="java">assert ! Thread.holdsLock(that);</code></li>
                 </ul>
@@ -321,23 +359,24 @@ private void throwException(String blah) throws Exception {
     </section>
 
     <section>
-        <h1>Interruption</h1>
-        <ul>
+        <h2>Interruption</h2>
+        <ul class="fragment">
             <li><em>Always</em> handle interruption correctly</li>
-            <li>Cancel any in-progress tasks, if it makes sense to do so</li>
-            <li>Record interruption for later if cancellation does not make sense</li>
-            <li>
+            <li class="fragment">Cancel any in-progress tasks, if it makes sense to do so</li>
+            <li class="fragment">Record interruption for later if cancellation does not make sense</li>
+            <li class="fragment">
                 Propagate in one of two ways:
-                <ul>
+                <ul class="fragment">
                     <li>Throw or propagate an InterruptedException</li>
-                    <li>Re-set interrupt status and return or throw a different exception</li>
+                    <li class="fragment">Re-set interrupt status and return or throw a different exception</li>
                 </ul>
             </li>
+            <li class="fragment">Suspend interruptibility using JBossThread.executeWithInterruptDeferred()</li>
         </ul>
     </section>
 
     <section>
-        <h1>Recording Interrupts</h1>
+        <h2>Recording Interrupts</h2>
 <pre><code class="java" contenteditable>    // ...
     synchronized (lockObj) {
         boolean intr = false;
@@ -355,116 +394,117 @@ private void throwException(String blah) throws Exception {
     </section>
 
     <section>
-        <h1>GC</h1>
-        <ul>
+        <h2>GC</h2>
+        <ul class="fragment">
             <li>Be mindful of allocation pressure, especially in frameworks and libraries</li>
-            <li>
+            <li class="fragment">
                 Do not rely on finalize() or soft/weak/phantom references without discussing it first
-                <ul>
+                <ul class="fragment">
                     <li>Lots of subtle problems - they generally don't work</li>
-                    <li>They cause more problems than they solve</li>
+                    <li class="fragment">They usually cause more problems than they solve</li>
                 </ul>
             </li>
         </ul>
     </section>
 
     <section>
-        <h1>Performance</h1>
-        <ul>
+        <h2>Performance</h2>
+        <ul class="fragment">
             <li>
                 Don't prematurely optimize new code/ideas
-                <ul>
+                <ul class="fragment">
                     <li>Concern yourself with algorithmic complexity <em>first</em></li>
                 </ul>
             </li>
-            <li>Use a profiler <em>before</em> refactoring everything</li>
-            <li>
+            <li class="fragment">Use a profiler <em>before</em> refactoring everything</li>
+            <li class="fragment">
                 Things to look for:
                 <ol>
-                    <li>Memory usage and allocation pressure - smaller is often faster</li>
-                    <li>Concurrency: <a href="http://en.wikipedia.org/wiki/Amdahl's_law">Amdahl's law</a></li>
-                    <li>Concurrency: contention and false sharing</li>
+                    <li class="fragment">Memory usage and allocation pressure - smaller is often faster</li>
+                    <li class="fragment">Concurrency: <a href="http://en.wikipedia.org/wiki/Amdahl's_law">Amdahl's law</a></li>
+                    <li class="fragment">Concurrency: contention and false sharing</li>
                 </ol>
             </li>
-            <li>
+            <li class="fragment">
                 Micro-optimizations come <em>last</em>
-                <ul><li>Beware of micro-benchmarks - they can be deceptive</li></ul>
+                <ul class="fragment"><li>Beware of micro-benchmarks - they can be deceptive</li></ul>
             </li>
         </ul>
     </section>
 
     <section>
-        <h1>MSC</h1>
-        <ul>
+        <h2>MSC</h2>
+        <ul class="fragment">
             <li>Do <em>not</em> use service listeners, ever: they are not safe, not meant for users, and they are going away</li>
-            <li>Do not create services for things that the service cannot directly and exclusively control</li>
-            <li>
+            <li class="fragment">Do not create services for things that the service cannot directly and exclusively control</li>
+            <li class="fragment">
                 Do not block service threads; use async instead
-                <ul>
+                <ul class="fragment">
                     <li>If you already have a completion callback, it's a perfect fit</li>
-                    <li>Otherwise block some other thread</li>
-                    <li>You <em>must</em> guarantee that start/stop will complete</li>
-                    <li>MSC 2 will have more flexible threading options</li>
+                    <li class="fragment">Otherwise block some other thread</li>
+                    <li class="fragment">You <em>must</em> guarantee that start/stop will complete</li>
+                    <li class="fragment">MSC 2 will have more flexible threading options</li>
                 </ul>
             </li>
         </ul>
     </section>
 
     <section>
-        <h1>MSC</h1>
-        <ul>
+        <h2>MSC</h2>
+        <ul class="fragment">
             <li>Do not store ServiceControllers, ServiceContainers, etc. in static fields</li>
-            <li>Do not directly access the service registry from services</li>
-            <li>Do not blindly put synchronized on your start and stop method</li>
-            <li>All services <em>must</em> be <b>restartable</b>, i.e. must be able to be stopped and started again independently of any other consideration</li>
+            <li class="fragment">Do not directly access the service registry from services</li>
+            <li class="fragment">Do not blindly put synchronized on your start and stop method</li>
+            <li class="fragment">All services <em>must</em> be <b>restartable</b>, i.e. must be able to be stopped and started again independently of any other consideration</li>
         </ul>
     </section>
 
     <section>
-        <h1>Logging</h1>
-        <ul>
+        <h2>Logging</h2>
+        <ul class="fragment">
             <li>Supporting i18n logging is <em>not</em> optional</li>
-            <li>
+            <li class="fragment">
                 JBoss Logging solves this very easily
-                <ul>
+                <ul class="fragment">
                     <li>Small footprint, no dependencies, can be shaded in fully or partially</li>
-                    <li>Simple API</li>
-                    <li>Supports most major logging implementations</li>
-                    <li>Very efficient</li>
-                    <li>Compile-time annotation processing</li>
+                    <li class="fragment">Simple API</li>
+                    <li class="fragment">Supports most major logging implementations</li>
+                    <li class="fragment">Very efficient</li>
+                    <li class="fragment">Compile-time annotation processing</li>
                 </ul>
             </li>
         </ul>
     </section>
 
     <section>
-        <h1>JBoss Logging</h1>
-        <ul>
+        <h2>JBoss Logging</h2>
+        <ul class="fragment">
             <li>
                 Most "isTraceEnabled"-style constructs are not necessary
-                <ul>
+                <ul class="fragment">
                     <li>Use <code>tracef</code> instead</li>
-                    <li>Or, <code>debugf</code> if desired</li>
+                    <li class="fragment">Or, <code>debugf</code> if desired</li>
                 </ul>
             </li>
-            <li>Do not use string concatenation in logger arguments</li>
+            <li class="fragment">Do not use string concatenation in logger arguments</li>
+            <li class="fragment">Latest JBoss Logging supports <code>tracef</code>/etc. with <code>int</code> arguments</li>
         </ul>
     </section>
 
     <section>
-        <h1>Security</h1>
-        <ul>
+        <h2>Security</h2>
+        <ul class="fragment">
             <li>Some users want or require a security manager</li>
-            <li>Be aware of how privileges are added and removed in the Java security model</li>
-            <li>Do not expose methods with <code>doPrivileged</code> without a preceding permission check</li>
-            <li>Use permission checks as needed</li>
-            <li><em>Never</em> expose public static mutable fields</li>
-            <li>Use WildFly Security Manager facilities for better performance and convenience</li>
+            <li class="fragment">Be aware of how privileges are added and removed in the Java security model</li>
+            <li class="fragment">Do not expose methods with <code>doPrivileged</code> without a preceding permission check</li>
+            <li class="fragment">Use permission checks as needed</li>
+            <li class="fragment"><em>Never</em> expose public static mutable fields</li>
+            <li class="fragment">Use WildFly Security Manager facilities for better performance and convenience</li>
         </ul>
     </section>
 
     <section>
-        <h1>That's it!</h1>
+        <h2>That's it!</h2>
     </section>
 
 </div>
