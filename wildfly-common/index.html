@@ -1,0 +1,159 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+
+    <title>WildFly Common</title>
+
+    <meta name="description" content="Bytecode Hacks: Bridger / Seven2Six">
+    <meta name="author" content="David M. Lloyd">
+
+    <meta name="apple-mobile-web-app-capable" content="yes"/>
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+    <link rel="stylesheet" href="css/reveal.min.css">
+    <link rel="stylesheet" href="css/theme/night.css" id="theme">
+
+    <!-- For syntax highlighting -->
+    <link rel="stylesheet" href="lib/css/zenburn.css">
+
+    <!-- If the query includes 'print-pdf', include the PDF print sheet -->
+    <script>
+        if (window.location.search.match(/print-pdf/gi)) {
+            var link = document.createElement('link');
+            link.rel = 'stylesheet';
+            link.type = 'text/css';
+            link.href = 'css/print/pdf.css';
+            document.getElementsByTagName('head')[0].appendChild(link);
+        }
+    </script>
+
+    <!--[if lt IE 9]>
+    <script src="lib/js/html5shiv.js"></script>
+    <![endif]-->
+
+    <script src="http://code.jquery.com/jquery-1.10.2.min.js"></script>
+</head>
+
+<body>
+
+<div class="reveal">
+
+<!-- Any section element inside of this container is displayed as a slide -->
+<div class="slides">
+    <section>
+        <h1>WildFly Common</h1>
+
+        <p>
+            <small><em>Presentation Prepared By:</em><br>David M. Lloyd &lt;<a href="mailto:david.lloyd@redhat.com">david.lloyd@redhat.com</a>&gt;</small>
+        </p>
+    </section>
+
+    <section>
+        <h2>What would it be?</h2>
+        <ul class="fragment">
+            <li>A place for bits of practical, basic (common) code</li>
+            <li class="fragment">Things we wish were part of the JDK</li>
+            <li class="fragment">Things that defy categorization</li>
+            <li class="fragment">
+                So far:
+                <ul>
+                    <li>Automatically-collecting reference types</li>
+                    <li class="fragment">Context selectors with security</li>
+                    <li class="fragment">Common i18n messages for things like null parameter values</li>
+                </ul>
+            </li>
+        </ul>
+    </section>
+
+    <section>
+        <h2>What must it <em>never</em> become?</h2>
+        <ul class="fragment">
+            <li>A dumping ground (like jboss-common-core)</li>
+            <li class="fragment">
+                A place for categorizable things like:
+                <ul class="fragment">
+                    <li>Collections (no matter how cool)</li>
+                    <li class="fragment">XML utilities</li>
+                    <li class="fragment">Filesystem utilities</li>
+                    <li class="fragment">Base64 anything</li>
+                </ul>
+            </li>
+            <li class="fragment">These things would be worthy of their own project!</li>
+        </ul>
+    </section>
+
+    <section>
+        <h2>How would it be developed?</h2>
+        <ul class="fragment">
+            <li>Like any other project, mostly...</li>
+            <li class="fragment">But scope would be managed with an iron fist!</li>
+        </ul>
+    </section>
+
+    <section>
+        <h2>Or else what?</h2>
+        <ul class="fragment">
+            <li>Or else I'm not doing it...</li>
+            <li class="fragment">But someone else can, if they wish</li>
+        </ul>
+    </section>
+
+    <section id="end">
+        <h1>That's it!</h1>
+    </section>
+</div>
+
+</div>
+
+<script src="lib/js/head.min.js"></script>
+<script src="js/reveal.min.js"></script>
+
+<script>
+
+    // Full list of configuration options available here:
+    // https://github.com/hakimel/reveal.js#configuration
+    Reveal.initialize({
+        controls: true,
+        progress: true,
+        history: true,
+        center: true,
+        backgroundTransition: 'fade',
+
+        theme: Reveal.getQueryHash().theme, // available themes are in /css/theme
+        transition: Reveal.getQueryHash().transition || 'default', // default/cube/page/concave/zoom/linear/fade/none
+
+        // Parallax scrolling
+        // parallaxBackgroundImage: 'https://s3.amazonaws.com/hakim-static/reveal-js/reveal-parallax-1.jpg',
+        // parallaxBackgroundSize: '2100px 900px',
+
+        // Optional libraries used to extend on reveal.js
+        dependencies: [
+            { src: 'lib/js/classList.js', condition: function () {
+                return !document.body.classList;
+            } },
+            { src: 'plugin/markdown/marked.js', condition: function () {
+                return !!document.querySelector('[data-markdown]');
+            } },
+            { src: 'plugin/markdown/markdown.js', condition: function () {
+                return !!document.querySelector('[data-markdown]');
+            } },
+            { src: 'plugin/highlight/highlight.js', async: true, callback: function () {
+                hljs.initHighlightingOnLoad();
+            } },
+            { src: 'plugin/zoom-js/zoom.js', async: true, condition: function () {
+                return !!document.body.classList;
+            } },
+            { src: 'plugin/notes/notes.js', async: true, condition: function () {
+                return !!document.body.classList;
+            } }
+        ]
+    });
+
+</script>
+
+</body>
+</html>
