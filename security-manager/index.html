@@ -120,10 +120,9 @@
                 <ul class="fragment">
                     <li>In a standalone JVM, <code>-Djava.security.manager</code></li>
                     <li class="fragment">In a standalone JBoss Modules application, <code>-secmgr</code></li>
-                    <li class="fragment">In EAP 6.4 or later 6.x, set SECMGR to "true" in standalone.conf</li>
                     <li class="fragment">In WildFly 8, just configure the <code>security-manager</code> subsystem</li>
                     <li class="fragment">
-                        In WildFly 9+ and EAP 7+, pass <code>-secmgr</code> to the start script (with or without the subsystem configured)
+                        In WildFly 9+ and EAP 6.4+ and 7+, set SECMGR to "true" in standalone.conf or pass <code>-secmgr</code> to the start script (with or without the subsystem configured)
                         <ul class="fragment">
                             <li><code>permissions.xml</code> only works with the subsystem though!</li>
                         </ul>
@@ -233,13 +232,13 @@
     <section id="safe-privilege">
         <h2>Being safe with privilege</h2>
         <ul class="fragment">
-            <li>
+            <li>For better or worse, many users rely on the security manager to actually provide some measure of security</li>
+            <li class="fragment">
                 It is easy to accidentally defeat the security manager
                 <ul class="fragment">
                     <li>Also known as a <em>security vulnerability</em></li>
                 </ul>
             </li>
-            <li class="fragment">For better or worse, many users rely on the security manager to actually provide some measure of security</li>
             <li class="fragment">There are some important guidelines to follow to avoid introducing vulnerabilities</li>
         </ul>
     </section>
@@ -265,6 +264,7 @@
                 <ul class="fragment">
                     <li>They are <a href="https://docs.oracle.com/javase/8/docs/api/index.html?java/security/AccessControlContext.html#AccessControlContext-java.security.ProtectionDomain:A-">trivially constructable</a> with arbitrary protection domains</li>
                     <li class="fragment">Untrusted ACCs are particularly dangerous in combination with untrusted privileged actions</li>
+                    <li class="fragment">AccessController.doPrivileged() gets away with this by merging in the caller's permissions</li>
                     <li class="fragment">If you need a captured ACC, capture it yourself with <a href="https://docs.oracle.com/javase/8/docs/api/index.html?java/security/AccessController.html#getContext--">AccessController.getContext()</a></li>
                 </ul>
             </li>
