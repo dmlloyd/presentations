@@ -1,0 +1,289 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+
+    <title>New JavaDoc Doclet</title>
+
+    <meta name="description" content="New JavaDoc Doclet">
+    <meta name="author" content="David M. Lloyd">
+
+    <meta name="apple-mobile-web-app-capable" content="yes"/>
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+    <link rel="stylesheet" href="css/reveal.min.css">
+    <link rel="stylesheet" href="css/theme/night.css" id="theme">
+
+    <!-- For syntax highlighting -->
+    <link rel="stylesheet" href="lib/css/zenburn.css">
+
+    <!-- If the query includes 'print-pdf', include the PDF print sheet -->
+    <script>
+        if (window.location.search.match(/print-pdf/gi)) {
+            var link = document.createElement('link');
+            link.rel = 'stylesheet';
+            link.type = 'text/css';
+            link.href = 'css/print/pdf.css';
+            document.getElementsByTagName('head')[0].appendChild(link);
+        }
+    </script>
+
+    <!--[if lt IE 9]>
+    <script src="lib/js/html5shiv.js"></script>
+    <![endif]-->
+
+    <script src="http://code.jquery.com/jquery-1.10.2.min.js"></script>
+</head>
+
+<body>
+
+<div class="reveal">
+
+<!-- Any section element inside of this container is displayed as a slide -->
+<div class="slides">
+    <section>
+        <h1>New JavaDoc Doclet</h1>
+
+        <p>
+            <small><em>Presentation Prepared By:</em><br>David M. Lloyd &lt;<a href="mailto:david.lloyd@redhat.com">david.lloyd@redhat.com</a>&gt;</small>
+        </p>
+    </section>
+
+    <section id="overview">
+        <h2>Overview</h2>
+        <ul class="fragment">
+            <li>Justification</li>
+            <li class="fragment">Requirements ideas</li>
+            <li class="fragment">Implementation ideas</li>
+            <li class="fragment">Feasibility</li>
+        </ul>
+    </section>
+
+    <section id="justification">
+        <h2>Justification</h2>
+        <ul class="fragment">
+            <li class="fragment">
+                The standard doclet sucks
+                <ul class="fragment">
+                    <li>Ugly styling which changes with every JDK release</li>
+                    <li class="fragment">Difficult to cross-link projects</li>
+                    <li class="fragment">Difficult to aggregate docs</li>
+                    <li class="fragment">Outdated presentation</li>
+                    <li class="fragment">Many basic missing features</li>
+                </ul>
+            </li>
+        </ul>
+    </section>
+
+    <section id="requirements-0">
+        <h1>Requirements</h1>
+        <p class="fragment">This list is non-exhaustive... here are some ideas, then let's brainstorm some more!</p>
+    </section>
+
+    <section id="requirements-compat">
+        <h2>Requirements: Compatibility</h2>
+        <ul class="fragment">
+            <li>JavaDoc sites have a sort of "API"</li>
+            <li class="fragment">Tooling and IDEs may use this data</li>
+            <li class="fragment">
+                Many structural aspects would have to remain the same
+                <ul class="fragment">
+                    <li>Frames, probably :-(</li>
+                    <li>Various index files and summary pages</li>
+                    <li>Possibly some HTML structure</li>
+                </ul>
+            </li>
+        </ul>
+    </section>
+
+    <section id="requirements-html5">
+        <h2>Requirements: HTML 5</h2>
+        <ul class="fragment">
+            <li>Some things can be updated however</li>
+            <li class="fragment">HTML 5 structures and idioms</li>
+            <li class="fragment">SVG graphics</li>
+            <li class="fragment">Mobile-friendly presentation</li>
+        </ul>
+    </section>
+
+    <section id="requirements-js">
+        <h2>Requirements: JavaScript</h2>
+        <ul class="fragment">
+            <li>Our doclet could be smarter</li>
+            <li class="fragment">Dynamically sortable member and type lists</li>
+            <li class="fragment">Grouping options for member and type lists</li>
+        </ul>
+    </section>
+
+    <section id="requirements-css">
+        <h2>Requirements: CSS</h2>
+        <ul class="fragment">
+            <li>Standard doclet CSS sucks more every Java release; we can do better</li>
+            <li class="fragment">Icons for class and member access levels</li>
+            <li class="fragment">Icons for type category (class vs. interface, etc.)</li>
+            <li class="fragment">Sensible spacing</li>
+            <li class="fragment">Bundled (free) fonts for consistent rendering</li>
+        </ul>
+    </section>
+
+    <section id="requirements-adm">
+        <h2>Requirements: Admonitions</h2>
+        <ul class="fragment">
+            <li>
+                Standard doc tags for uniform admonitions:
+                <ul class="fragment">
+                    <li>Note/Caution/Warning etc. similar to our regular manuals</li>
+                    <li class="fragment">Thread safety admonition blocks for classes and members</li>
+                    <li class="fragment">Security admonitions for specifying permissions and privilege information</li>
+                    <li class="fragment">Standardized compatibility expectation management for APIs and SPIs</li>
+                    <li class="fragment">Better deprecation admonitions for e.g. specific feature EOL time lines</li>
+                    <li class="fragment">Per-project admonitions</li>
+                </ul>
+            </li>
+        </ul>
+    </section>
+
+    <section id="requirements-dia">
+        <h2>Requirements: Diagrams</h2>
+        <ul class="fragment">
+            <li>Automatic class and package diagramming (SVG/HTML5 style)</li>
+            <li class="fragment">
+                Standard doc tags for scripted diagramming:
+                <ul class="fragment">
+                    <li>UML-like sequence diagrams like <a href="http://blockdiag.com/en/seqdiag/index.html">seqdiag</a> or <a href="https://www.websequencediagrams.com/">www.websequencediagrams.com</a></li>
+                    <li class="fragment">GraphViz or D2-style SVG graphs for DAGs and other node graphs</li>
+                    <li class="fragment">Network diagram graphs like <a href="http://blockdiag.com/en/nwdiag/index.html">nwdiag</a></li>
+                    <li class="fragment">Network protocol diagrams like <a href="http://blockdiag.com/en/nwdiag/packetdiag-examples.html">packetdiag</a></li>
+                </ul>
+            </li>
+        </ul>
+    </section>
+
+    <section id="requirements-tags">
+        <h2>Requirements: Other tags</h2>
+        <ul class="fragment">
+            <li>Formalize a grammar for nested inline tags</li>
+            <li class="fragment">Add full support for the usually-disabled <code>@exclude</code> tag</li>
+            <li class="fragment">Automatic <code>@since</code> generation? Somehow?</li>
+            <li class="fragment">Add <code>{@rfc ####}</code> tag to link to <a href="https://tools.ietf.org/html/rfc####">https://tools.ietf.org/html/rfc####</a></li>
+            <li class="fragment">Add <code>{@jsr ####}</code> tag to link to <a href="https://jsp.org/en/jsr/detail?id=####">https://jsp.org/en/jsr/detail?id=####</a></li>
+        </ul>
+    </section>
+
+    <section id="requirements-ext">
+        <h2>Requirements: Extensibility</h2>
+        <ul class="fragment">
+            <li>How about not taglets</li>
+            <li class="fragment">Something fairly robust and powerful, else why bother?</li>
+        </ul>
+    </section>
+
+    <section id="implementation">
+        <h1>Implementation Ideas</h1>
+    </section>
+
+    <section id="impl-html5">
+        <h2>HTML5, Obviously</h2>
+    </section>
+
+    <section id="impl-d3">
+        <h2>Dynamic layout graphing</h2>
+        <p class="fragment"><a href="http://d3js.org/">D3</a> does this very nicely, but there are other options too</p>
+    </section>
+
+    <section id="impl-anno">
+        <h2>Standard annotation processing</h2>
+        <ul class="fragment">
+            <li>Well-understood</li>
+            <li class="fragment">Stays reliably up to date with the JDK</li>
+            <li class="fragment">The JDK is moving to it too (see <a href="http://openjdk.java.net/jeps/221">JEP 221</a>)</li>
+        </ul>
+    </section>
+
+    <section id="impl-mod-css">
+        <h2>Modular CSS</h2>
+        <p class="fragment">This beautiful bit of code: <a href="http://clementbtc.github.io/genesis/index.html?com/projetloki/genesis/Genesis.html">Genesis</a></p>
+    </section>
+
+    <section id="feas">
+        <h1>Feasibility</h1>
+    </section>
+
+    <section id="feas-scope">
+        <h2>Scope of work</h2>
+        <ul class="fragment">
+            <li>It's not small</li>
+            <li class="fragment">But it's not huge either</li>
+            <li class="fragment">Flat complexity, potentially</li>
+            <li class="fragment">Mock up visual POC ⇨ structural code design ⇨ code core ⇨ everything else is an extension</li>
+        </ul>
+    </section>
+
+    <section id="feas-how">
+        <h2>Resourcing</h2>
+        <ul class="fragment">
+            <li>Option 1: try for TAG approval and funded resourcing through Engineering</li>
+            <li class="fragment">Option 1½: try for funded resourcing through the docs team</li>
+            <li class="fragment">Option 2: make it a strictly after-hours project</li>
+            <li class="fragment">Option 3: wait for Oracle to do it (hint: unlikely but <a href="http://openjdk.java.net/jeps/224">possible</a>)</li>
+        </ul>
+    </section>
+
+    <section id="end">
+        <h1>That's it!</h1>
+    </section>
+</div>
+
+</div>
+
+<script src="lib/js/head.min.js"></script>
+<script src="js/reveal.min.js"></script>
+
+<script>
+
+    // Full list of configuration options available here:
+    // https://github.com/hakimel/reveal.js#configuration
+    Reveal.initialize({
+        controls: true,
+        progress: true,
+        history: true,
+        center: true,
+        backgroundTransition: 'fade',
+
+        theme: Reveal.getQueryHash().theme, // available themes are in /css/theme
+        transition: Reveal.getQueryHash().transition || 'default', // default/cube/page/concave/zoom/linear/fade/none
+
+        // Parallax scrolling
+        // parallaxBackgroundImage: 'https://s3.amazonaws.com/hakim-static/reveal-js/reveal-parallax-1.jpg',
+        // parallaxBackgroundSize: '2100px 900px',
+
+        // Optional libraries used to extend on reveal.js
+        dependencies: [
+            { src: 'lib/js/classList.js', condition: function () {
+                return !document.body.classList;
+            } },
+            { src: 'plugin/markdown/marked.js', condition: function () {
+                return !!document.querySelector('[data-markdown]');
+            } },
+            { src: 'plugin/markdown/markdown.js', condition: function () {
+                return !!document.querySelector('[data-markdown]');
+            } },
+            { src: 'plugin/highlight/highlight.js', async: true, callback: function () {
+                hljs.initHighlightingOnLoad();
+            } },
+            { src: 'plugin/zoom-js/zoom.js', async: true, condition: function () {
+                return !!document.body.classList;
+            } },
+            { src: 'plugin/notes/notes.js', async: true, condition: function () {
+                return !!document.body.classList;
+            } }
+        ]
+    });
+
+</script>
+
+</body>
+</html>
