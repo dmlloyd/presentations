@@ -276,6 +276,98 @@
         </aside>
     </section>
 
+    <section id="wfsm">
+        <h1>WildFly Security Manager</h1>
+    </section>
+
+    <section id="wfsm-unchecked">
+        <h2>WildFly Security Manager Features</h2>
+        <ul class="fragment">
+            <li>Unchecked mode
+                <ul class="fragment">
+                    <li>Executes privileged action blocks with permission checking turned off</li>
+                    <li class="fragment">Used in performance-sensitive internal code</li>
+                    <li class="fragment">Requires the caller to have a specific permission</li>
+                    <li class="fragment">Use very carefully</li>
+                </ul>
+            </li>
+        </ul>
+    </section>
+
+    <section id="wfsm-param">
+        <h2>WildFly Security Manager Features</h2>
+        <ul class="fragment">
+            <li>Parameterized privileged actions
+                <ul class="fragment">
+                    <li>Pass a parameter in to a privileged action</li>
+                    <li class="fragment">Avoid allocations in some cases</li>
+                    <li class="fragment">Only faster if WFSM is installed</li>
+                </ul>
+            </li>
+        </ul>
+    </section>
+
+    <section id="wfsm-check">
+        <h2>WildFly Security Manager Features</h2>
+        <ul class="fragment">
+            <li>Non-throwing permission checks
+                <ul class="fragment">
+                    <li>Avoid overhead of access exception for simple tests</li>
+                    <li class="fragment">Only faster if WFSM is installed</li>
+                </ul>
+            </li>
+        </ul>
+    </section>
+
+    <section id="wfsm-utils">
+        <h2>WildFly Security Manager Features</h2>
+        <ul class="fragment">
+            <li>Caller checking utility methods
+                <ul class="fragment">
+                    <li>Perform common actions without privileged blocks, like:
+                        <ul class="fragment">
+                            <li>Get/set/clear system properties</li>
+                            <li>Get a class' class loader</li>
+                            <li>Get/set the TCCL</li>
+                        </ul>
+                    </li>
+                    <li class="fragment">Only faster if WFSM is installed</li>
+                </ul>
+            </li>
+        </ul>
+    </section>
+
+    <section id="wfsm-stack">
+        <h2>WildFly Security Manager Features</h2>
+        <ul class="fragment">
+            <li>Stack inspector
+                <ul class="fragment">
+                    <li>A common API to determine the calling class</li>
+                    <li class="fragment">Automatically chooses the fastest available method</li>
+                    <li class="fragment">Requires permission to acquire the inspector instance</li>
+                </ul>
+            </li>
+        </ul>
+    </section>
+
+    <section id="wfsm-actions">
+        <h2>WildFly Security Manager Features</h2>
+        <ul class="fragment">
+            <li>Collection of common privileged actions</li>
+        </ul>
+    </section>
+
+    <section id="wfsm-future">
+        <h2>Future of WildFly Security Manager</h2>
+        <ul class="fragment">
+            <li>Project appears to be a success</li>
+            <li class="fragment">Merging with WildFly Elytron</li>
+            <li class="fragment">The <a href="https://github.com/wildfly-security/security-manager">security manager repository</a>
+                is the upstream for <a href="https://github.com/wildfly-security/wildfly-elytron">Elytron</a></li>
+            <li class="fragment">...at least until Elytron is fully integrated</li>
+        </ul>
+    </section>
+
     <section id="java8">
         <h2>Security Manager related features in Java 8</h2>
         <ul class="fragment">
