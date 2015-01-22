@@ -1,0 +1,237 @@
+<!doctype html>
+<!--
+  ~ JBoss, Home of Professional Open Source.
+  ~ Copyright 2014, Red Hat, Inc., and individual contributors
+  ~ as indicated by the @author tags. See the copyright.txt file in the
+  ~ distribution for a full listing of individual contributors.
+  ~
+  ~ This is free software; you can redistribute it and/or modify it
+  ~ under the terms of the GNU Lesser General Public License as
+  ~ published by the Free Software Foundation; either version 2.1 of
+  ~ the License, or (at your option) any later version.
+  ~
+  ~ This software is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+  ~ Lesser General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU Lesser General Public
+  ~ License along with this software; if not, write to the Free
+  ~ Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+  ~ 02110-1301 USA, or see the FSF site: http://www.fsf.org.
+  -->
+
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+
+    <title>WildFly Architecture Future</title>
+
+    <meta name="description" content="WildFly Architecture Future">
+    <meta name="author" content="David M. Lloyd">
+
+    <meta name="apple-mobile-web-app-capable" content="yes"/>
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+    <link rel="stylesheet" href="css/reveal.min.css">
+    <link rel="stylesheet" href="css/theme/night.css" id="theme">
+
+    <!-- For syntax highlighting -->
+    <link rel="stylesheet" href="lib/css/zenburn.css">
+
+    <!-- If the query includes 'print-pdf', include the PDF print sheet -->
+    <script>
+        if (window.location.search.match(/print-pdf/gi)) {
+            var link = document.createElement('link');
+            link.rel = 'stylesheet';
+            link.type = 'text/css';
+            link.href = 'css/print/pdf.css';
+            document.getElementsByTagName('head')[0].appendChild(link);
+        }
+    </script>
+
+    <!--[if lt IE 9]>
+    <script src="lib/js/html5shiv.js"></script>
+    <![endif]-->
+
+    <script src="http://code.jquery.com/jquery-1.10.2.min.js"></script>
+</head>
+
+<body>
+
+<div class="reveal">
+
+<!-- Any section element inside of this container is displayed as a slide -->
+<div class="slides">
+    <section>
+        <h1>WildFly Architecture Future</h1>
+
+        <p>
+            <small><em>Presentation Prepared By:</em><br>David M. Lloyd &lt;<a href="mailto:david.lloyd@redhat.com">david.lloyd@redhat.com</a>&gt;</small>
+        </p>
+    </section>
+
+    <section id="amm">
+        <h1>Annotation-Based Model</h1>
+    </section>
+
+    <section id="amm-status">
+        <h2>Status</h2>
+        <ul>
+            <li class="fragment">In progress</li>
+            <li class="fragment">Using JDeparser2 and XOM</li>
+        </ul>
+    </section>
+
+    <section id="amm-mm">
+        <h2>Model model API</h2>
+        <ul>
+            <li class="fragment">Models any node type
+                <ul>
+                    <li class="fragment">Resources</li>
+                    <li class="fragment">Attribute groups</li>
+                    <li class="fragment">Operations</li>
+                </ul>
+            </li>
+            <li class="fragment">Custom attribute types</li>
+            <li class="fragment">Textual node descriptions & docs</li>
+            <li class="fragment">Default values</li>
+            <li class="fragment">Expressions</li>
+            <li class="fragment">XML and DMR mapping rules <span class="fragment">(for compatibility with non-standard marshallers)</span></li>
+        </ul>
+    </section>
+
+    <section id="amm-ann">
+        <h2>Annotation processing</h2>
+        <ul>
+            <li class="fragment">Single annotation processor for all outputs</li>
+            <li class="fragment">Outputs a model model for the next stage</li>
+            <li class="fragment">Abstracts the Java language model API from the generators</li>
+            <li class="fragment">Includes JavaDoc into the model model</li>
+        </ul>
+    </section>
+
+    <section id="amm-gen">
+        <h2>Generator API</h2>
+        <ul>
+            <li class="fragment">Supports separate generators for different purposes
+                <ul>
+                    <li class="fragment">Implementation classes</li>
+                    <li class="fragment">Builder classes</li>
+                    <li class="fragment">XML parse/deparse classes</li>
+                    <li class="fragment">DMR translation classes</li>
+                    <li class="fragment">DMR resource descriptions</li>
+                    <li class="fragment">XSD generator</li>
+                </ul>
+            </li>
+        </ul>
+    </section>
+
+    <section id="amm-concept-resolve">
+        <h2>Concepts: Expression resolution</h2>
+        <ul>
+            <li class="fragment">Each node has a resolved and unresolved interface</li>
+            <li class="fragment">Unresolved interface is generated</li>
+            <li class="fragment">Implementations and builders for each interface type</li>
+            <li class="fragment">
+                Resolution happens one time only
+                <ul>
+                    <li class="fragment">At "run level" change</li>
+                    <li class="fragment">At node creation time</li>
+                </ul>
+            </li>
+        </ul>
+    </section>
+
+    <section id="amm-concept-compat">
+        <h2>Concepts: Compatibility</h2>
+        <ul>
+            <li class="fragment">????</li>
+            <li class="fragment">Can easily support several approaches</li>
+            <li class="fragment">We have to decide how domain versioning will work</li>
+        </ul>
+    </section>
+
+    <section id="amm-concept-impl">
+        <h2>Concepts: Implementation logic</h2>
+        <ul>
+            <li class="fragment">Generated code is not a good place for putting global operations
+                <ul>
+                    <li>E.g. <code>read-resource</code></li>
+                </ul>
+            </li>
+            <li class="fragment">Or operation handling code, etc.</li>
+            <li class="fragment">This logic should be central</li>
+            <li class="fragment">Generated metadata should suffice for central code to handle this</li>
+            <li class="fragment">Generated code can handle translation between XML/DMR/object forms</li>
+        </ul>
+    </section>
+
+    <section id="msc2">
+        <h1>MSC 2</h1>
+    </section>
+
+    <section id="msc2-status">
+        <h2>Status</h2>
+        <ul>
+            <li class="fragment">Actively developed</li>
+            <li class="fragment">Very close to Beta</li>
+            <li class="fragment">All core functionality is done</li>
+            <li class="fragment">Some API cleanups and enhancements remain</li>
+        </ul>
+    </section>
+</div>
+
+</div>
+
+<script src="lib/js/head.min.js"></script>
+<script src="js/reveal.min.js"></script>
+
+<script>
+
+    // Full list of configuration options available here:
+    // https://github.com/hakimel/reveal.js#configuration
+    Reveal.initialize({
+        controls: true,
+        progress: true,
+        history: true,
+        center: true,
+        backgroundTransition: 'fade',
+
+        theme: Reveal.getQueryHash().theme, // available themes are in /css/theme
+        transition: Reveal.getQueryHash().transition || 'default', // default/cube/page/concave/zoom/linear/fade/none
+
+        // Parallax scrolling
+        // parallaxBackgroundImage: 'https://s3.amazonaws.com/hakim-static/reveal-js/reveal-parallax-1.jpg',
+        // parallaxBackgroundSize: '2100px 900px',
+
+        // Optional libraries used to extend on reveal.js
+        dependencies: [
+            { src: 'lib/js/classList.js', condition: function () {
+                return !document.body.classList;
+            } },
+            { src: 'plugin/markdown/marked.js', condition: function () {
+                return !!document.querySelector('[data-markdown]');
+            } },
+            { src: 'plugin/markdown/markdown.js', condition: function () {
+                return !!document.querySelector('[data-markdown]');
+            } },
+            { src: 'plugin/highlight/highlight.js', async: true, callback: function () {
+                hljs.initHighlightingOnLoad();
+            } },
+            { src: 'plugin/zoom-js/zoom.js', async: true, condition: function () {
+                return !!document.body.classList;
+            } },
+            { src: 'plugin/notes/notes.js', async: true, condition: function () {
+                return !!document.body.classList;
+            } }
+        ]
+    });
+
+</script>
+
+</body>
+</html>
