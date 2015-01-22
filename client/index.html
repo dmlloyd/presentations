@@ -217,6 +217,7 @@
             <ul>
                 <li class="fragment">JTA API implementation</li>
                 <li class="fragment">JNDI API to look up remote UserTransactions</li>
+                <li class="fragment">Use JNDI provider URL for connection and security</li>
                 <li class="fragment">SPI for Transaction inflow and outflow</li>
                 <li class="fragment">Uses Elytron security API to outflow security context</li>
                 <li class="fragment">Sane serializability of UserTransaction objects</li>
@@ -269,8 +270,9 @@
         <section id="ejb-feat">
             <h2>EJB client new features</h2>
             <ul>
+                <li class="fragment">Use JNDI provider URL for connection and security</li>
                 <li class="fragment">
-                    Not a lot, but add support for client-side annotations:
+                    Add support for client-side annotations:
                     <ul>
                         <li class="fragment"><code>@Idempotent</code> (facilitates safe protocol-specific automatic retry in certain failure cases)</li>
                         <li class="fragment"><code>@ClientAsynchronous</code> (small perf. improvement, true one-way methods)</li>
