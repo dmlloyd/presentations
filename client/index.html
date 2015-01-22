@@ -1,0 +1,461 @@
+<!doctype html>
+<!--
+  ~ JBoss, Home of Professional Open Source.
+  ~ Copyright 2014, Red Hat, Inc., and individual contributors
+  ~ as indicated by the @author tags. See the copyright.txt file in the
+  ~ distribution for a full listing of individual contributors.
+  ~
+  ~ This is free software; you can redistribute it and/or modify it
+  ~ under the terms of the GNU Lesser General Public License as
+  ~ published by the Free Software Foundation; either version 2.1 of
+  ~ the License, or (at your option) any later version.
+  ~
+  ~ This software is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+  ~ Lesser General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU Lesser General Public
+  ~ License along with this software; if not, write to the Free
+  ~ Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+  ~ 02110-1301 USA, or see the FSF site: http://www.fsf.org.
+  -->
+
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+
+    <title>Invocation & Client Design Overview</title>
+
+    <meta name="description" content="Invocation & Client Design Overview">
+    <meta name="author" content="David M. Lloyd">
+
+    <meta name="apple-mobile-web-app-capable" content="yes"/>
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+    <link rel="stylesheet" href="css/reveal.min.css">
+    <link rel="stylesheet" href="css/theme/night.css" id="theme">
+
+    <!-- For syntax highlighting -->
+    <link rel="stylesheet" href="lib/css/zenburn.css">
+
+    <!-- If the query includes 'print-pdf', include the PDF print sheet -->
+    <script>
+        if (window.location.search.match(/print-pdf/gi)) {
+            var link = document.createElement('link');
+            link.rel = 'stylesheet';
+            link.type = 'text/css';
+            link.href = 'css/print/pdf.css';
+            document.getElementsByTagName('head')[0].appendChild(link);
+        }
+    </script>
+
+    <!--[if lt IE 9]>
+    <script src="lib/js/html5shiv.js"></script>
+    <![endif]-->
+
+    <script src="http://code.jquery.com/jquery-1.10.2.min.js"></script>
+</head>
+
+<body>
+
+<div class="reveal">
+
+<!-- Any section element inside of this container is displayed as a slide -->
+<div class="slides">
+    <section id="title">
+        <h1>Invocation & Client Design Overview</h1>
+
+        <p>
+            <small><em>Presentation Prepared By:</em><br>David M. Lloyd &lt;<a href="mailto:david.lloyd@redhat.com">david.lloyd@redhat.com</a>&gt;</small>
+        </p>
+    </section>
+
+    <section id="arch">
+        <section id="arch-title">
+            <h1>Architecture Overview</h1>
+        </section>
+
+        <section id="arch-dia">
+            <a href="https://www.lucidchart.com/documents/view/8b085edb-9915-4606-9b08-bc7643353568">
+                <img src="https://www.lucidchart.com/publicSegments/view/54c10617-d0b8-4ff9-a8cb-36520a004c4f/image.png" height="550"/>
+            </a>
+        </section>
+    </section>
+
+    <section id="config">
+        <section id="config-title">
+            <h1>Unified Client Configuration</h1>
+        </section>
+
+        <section id="config-xml">
+            <h2>Configuration file/URL</h2>
+            <ul>
+                <li class="fragment">One shared XML configuration</li>
+                <li class="fragment">Simple StAX-based API, akin to StAXMapper</li>
+                <li class="fragment">XInclude support</li>
+                <li class="fragment">Namespaced root elements</li>
+                <li class="fragment">Each consumer reads one root element, ignoring the others</li>
+                <li class="fragment">Versioned namespace URNs</li>
+                <li class="fragment">Keep it simple, stupid</li>
+            </ul>
+        </section>
+
+        <section id="config-no">
+            <h2>Other configuration sources</h2>
+            <ul>
+                <li class="fragment">None!</li>
+                <li class="fragment">Consumers are free to use other mechanisms, e.g. selector pattern, in-container</li>
+            </ul>
+        </section>
+    </section>
+
+    <section id="discovery">
+        <section id="discovery-title">
+            <h1>Unified Discovery</h1>
+        </section>
+
+        <section id="discovery-op">
+            <h2>Discovery operation</h2>
+            <ul>
+                <li class="fragment">
+                    Maps a service specification to one or more URI(s)
+                    <ul>
+                        <li class="fragment">Abstract or concrete service type</li>
+                        <li class="fragment">Attribute-value pairs</li>
+
+                    </ul>
+                </li>
+                <li class="fragment">Optional LDAP-style filter specification</li>
+                <li class="fragment">Simple blocking queue based result API</li>
+            </ul>
+        </section>
+
+        <section id="discovery-config">
+            <h2>Discovery configuration</h2>
+            <ul>
+                <li class="fragment">Uses unified configuration mechanism by default</li>
+                <li class="fragment">Discovery instances are individually configurable</li>
+                <li class="fragment">
+                    Multiple providers
+                    <ul>
+                        <li class="fragment">Static configuration-based discovery</li>
+                        <li class="fragment">Future: SLP (<a href="https://tools.ietf.org/html/rfc2608">RFC 2608</a>)</li>
+                        <li class="fragment">Future: DNS-SD (<a href="https://tools.ietf.org/html/rfc6763">RFC 6763</a>)</li>
+                        <li class="fragment">Future: DNS-SD over mDNS (<a href="https://tools.ietf.org/html/rfc6762">RFC 6762</a>)</li>
+                    </ul>
+                </li>
+                <li class="fragment">SPI for user-defined providers</li>
+            </ul>
+        </section>
+    </section>
+
+    <section id="security">
+        <section id="security-title">
+            <h1>Unified Security: Elytron</h1>
+        </section>
+
+        <section id="security-op">
+            <h2>Elytron client operation</h2>
+            <ul>
+                <li class="fragment">Configure authentication for outbound connections</li>
+                <li class="fragment">API for performing remote authentication against a URI</li>
+                <li class="fragment">SPI for operation security outflow</li>
+                <li class="fragment">Support for any protocol</li>
+                <li class="fragment">All Remoting protocols share a security context</li>
+                <li class="fragment">Completely decouples security and authentication from other concerns</li>
+                <li class="fragment">Client and server protocol implementation in one JAR</li>
+            </ul>
+        </section>
+
+        <section id="security-config">
+            <h2>Elytron client configuration</h2>
+            <ul>
+                <li class="fragment">Selector pattern based</li>
+                <li class="fragment">Uses unified configuration mechanism by default</li>
+            </ul>
+        </section>
+    </section>
+
+    <section id="remoting">
+        <section id="remoting-title">
+            <h1>JBoss Remoting</h1>
+        </section>
+
+        <section id="remoting-config">
+            <h2>Remoting client configuration</h2>
+            <ul>
+                <li class="fragment">Uses unified configuration mechanism by default</li>
+                <li class="fragment">Configuration-based endpoint setup</li>
+                <li class="fragment">Use Elytron for outbound (and inbound) connection authentication</li>
+                <li class="fragment">Trimmed down connect APIs</li>
+                <li class="fragment">Automatic configuration-based reconnection and supporting SPIs</li>
+                <li class="fragment">SPI support for sharing connections between protocols</li>
+            </ul>
+        </section>
+    </section>
+
+    <section id="jta">
+        <section id="jta-title">
+            <h1>JTA Client</h1>
+        </section>
+
+        <section id="jta-origin">
+            <h2>JTA client origin</h2>
+            <ul>
+                <li class="fragment">Originally part of EJB protocol</li>
+                <li class="fragment">Prevents re-use with other protocols</li>
+                <li class="fragment">Hinders development of other transports e.g. HTTP</li>
+            </ul>
+        </section>
+
+        <section id="jta-overview">
+            <h2>JTA client overview</h2>
+            <ul>
+                <li class="fragment">JTA API implementation</li>
+                <li class="fragment">JNDI API to look up remote UserTransactions</li>
+                <li class="fragment">SPI for Transaction inflow and outflow</li>
+                <li class="fragment">Uses Elytron security API to outflow security context</li>
+                <li class="fragment">Sane serializability of UserTransaction objects</li>
+                <li class="fragment">
+                    Reusable by JMS and JDBC (future)
+                    <ul>
+                        <li class="fragment">Allows multiple remote operations across one transaction from the client</li>
+                    </ul>
+                </li>
+                <li class="fragment">Client and server protocol implementation in one JAR</li>
+            </ul>
+        </section>
+
+        <section id="jta-config">
+            <h2>JTA client configuration</h2>
+            <ul>
+                <li class="fragment">Uses unified configuration mechanism by default</li>
+            </ul>
+        </section>
+
+        <section id="jta-proto">
+            <h2>JTA client protocol</h2>
+            <ul>
+                <li class="fragment">Based on original EJB implementation</li>
+                <li class="fragment">More efficient</li>
+                <li class="fragment">Fix some inherent problems</li>
+                <li class="fragment">Compatibility mode to tunnel over EJB</li>
+            </ul>
+        </section>
+    </section>
+
+    <section id="ejb">
+        <section id="ejb-title">
+            <h1>EJB Client</h1>
+        </section>
+
+        <section id="ejb-overview">
+            <h2>EJB client overview</h2>
+            <ul>
+                <li class="fragment">Mostly API-compatible with AS 7.x, EAP 6.x, WildFly 8 & 9</li>
+                <li class="fragment">Adds new affinity type: URIAffinity</li>
+                <li class="fragment">Replace protocol implementation to fix various design issues</li>
+                <li class="fragment">Uses discovery API to resolve non-URI EJB locations</li>
+                <li class="fragment">Uses Elytron security API to outflow security context</li>
+                <li class="fragment">Uses JTA client API to outflow transaction context</li>
+                <li class="fragment">Client and server protocol implementation in one JAR</li>
+            </ul>
+        </section>
+
+        <section id="ejb-feat">
+            <h2>EJB client new features</h2>
+            <ul>
+                <li class="fragment">
+                    Not a lot, but add support for client-side annotations:
+                    <ul>
+                        <li class="fragment"><code>@Idempotent</code> (facilitates safe protocol-specific automatic retry in certain failure cases)</li>
+                        <li class="fragment"><code>@ClientAsynchronous</code> (small perf. improvement, true one-way methods)</li>
+                    </ul>
+                </li>
+                <li class="fragment">Better SPIs for protocol implementations</li>
+            </ul>
+        </section>
+
+        <section id="ejb-changes">
+            <h2>EJB client changes</h2>
+            <ul>
+                <li class="fragment"><code>EJBClientContext</code> not closeable</li>
+                <li class="fragment">No nested contexts</li>
+                <li class="fragment">No finalizers</li>
+                <li class="fragment">Many internal SPIs removed or changed</li>
+            </ul>
+        </section>
+    </section>
+
+    <section id="jndi">
+        <section id="jndi-title">
+            <h1>JNDI Client</h1>
+        </section>
+
+        <section id="jndi-overview">
+            <h2>JNDI client overview</h2>
+            <ul>
+                <li class="fragment">No user-visible changes; still the standard JNDI API</li>
+                <li class="fragment">Uses unified configuration mechanism by default</li>
+                <li class="fragment">Uses security API to outflow security context</li>
+                <li class="fragment">Client and server protocol implementation in one JAR</li>
+                <li class="fragment">Possible protocol improvements, if needed</li>
+                <li class="fragment">Definite implementation improvements</li>
+            </ul>
+        </section>
+    </section>
+
+    <section id="jmx">
+        <section id="jmx-title">
+            <h1>JMX</h1>
+        </section>
+
+        <section id="jmx-overview">
+            <h2>JMX overview</h2>
+            <ul>
+                <li class="fragment">Lower priority</li>
+                <li class="fragment">Still standard JMX API</li>
+                <li class="fragment">Would use unified configuration mechanism by default</li>
+                <li class="fragment">Would use Elytron security API to outflow security context</li>
+                <li class="fragment">Could use JTA client API to outflow transaction context</li>
+                <li class="fragment">Client and server protocol implementation in one JAR</li>
+            </ul>
+        </section>
+    </section>
+
+    <section id="wmp">
+        <section id="wmp-title">
+            <h1>WildFly Management Protocol</h1>
+        </section>
+
+        <section id="wmp-overview">
+            <h2>WMP overview</h2>
+            <ul>
+                <li class="fragment">Lower priority</li>
+                <li class="fragment">API could remain mostly unchanged</li>
+                <li class="fragment">Would use unified configuration mechanism by default</li>
+                <li class="fragment">Would use Elytron security API to outflow security context</li>
+                <li class="fragment">Client and server protocol implementation in one JAR</li>
+            </ul>
+        </section>
+    </section>
+
+    <section id="future">
+        <section id="future-title">
+            <h1>Future Remoting Direction</h1>
+        </section>
+
+        <section id="future-map">
+            <h2>Marshalling acceleration protocol</h2>
+            <ul>
+                <li class="fragment">Cached class descriptor negotiation protocol</li>
+                <li class="fragment">Increase wire efficiency on long-lived connections</li>
+                <li class="fragment">Usable by any Remoting-based protocol using Marshalling</li>
+            </ul>
+        </section>
+
+        <section id="future-stp">
+            <h2>Stream transport protocol</h2>
+            <ul>
+                <li class="fragment">Protocol for transporting <code>InputStream</code> and <code>OutputStream</code> instances</li>
+                <li class="fragment">Usable by any Remoting-based protocol using Marshalling</li>
+            </ul>
+        </section>
+
+        <section id="future-jms">
+            <h2>Remote JMS</h2>
+            <ul>
+                <li class="fragment">Protocol for transporting JMS</li>
+                <li class="fragment">Perhaps an alternative ActiveMQ transport?</li>
+                <li class="fragment">Would use JTA client API to outflow transaction context</li>
+                <li class="fragment">Would use Elytron security API to outflow security context</li>
+            </ul>
+        </section>
+
+        <section id="future-jdbc">
+            <h2>Remote JDBC</h2>
+            <ul>
+                <li class="fragment">Protocol for providing remote access to data sources</li>
+                <li class="fragment">Implementation candidate: <a href="http://vjdbc.sourceforge.net/">VJDBC</a></li>
+                <li class="fragment">Would use JTA client API to outflow transaction context</li>
+                <li class="fragment">Would use Elytron security API to outflow security context</li>
+            </ul>
+        </section>
+
+        <section id="future-log">
+            <h2>Remote logging</h2>
+            <ul>
+                <li class="fragment">Protocol for transporting log messages from one log manager to another</li>
+                <li class="fragment">Simple implementation</li>
+                <li class="fragment">Would use Elytron security API to outflow security context</li>
+            </ul>
+        </section>
+
+        <section id="future-other">
+            <h2>Other possibilities</h2>
+            <ul>
+                <li class="fragment">Remote NoSQL API</li>
+                <li class="fragment">Remote file sharing</li>
+            </ul>
+        </section>
+    </section>
+
+    <section id="end">
+        <h1>Discussion</h1>
+    </section>
+</div>
+
+</div>
+
+<script src="lib/js/head.min.js"></script>
+<script src="js/reveal.min.js"></script>
+
+<script>
+
+    // Full list of configuration options available here:
+    // https://github.com/hakimel/reveal.js#configuration
+    Reveal.initialize({
+        controls: true,
+        progress: true,
+        history: true,
+        center: true,
+        backgroundTransition: 'fade',
+
+        theme: Reveal.getQueryHash().theme, // available themes are in /css/theme
+        transition: Reveal.getQueryHash().transition || 'default', // default/cube/page/concave/zoom/linear/fade/none
+
+        // Parallax scrolling
+        // parallaxBackgroundImage: 'https://s3.amazonaws.com/hakim-static/reveal-js/reveal-parallax-1.jpg',
+        // parallaxBackgroundSize: '2100px 900px',
+
+        // Optional libraries used to extend on reveal.js
+        dependencies: [
+            { src: 'lib/js/classList.js', condition: function () {
+                return !document.body.classList;
+            } },
+            { src: 'plugin/markdown/marked.js', condition: function () {
+                return !!document.querySelector('[data-markdown]');
+            } },
+            { src: 'plugin/markdown/markdown.js', condition: function () {
+                return !!document.querySelector('[data-markdown]');
+            } },
+            { src: 'plugin/highlight/highlight.js', async: true, callback: function () {
+                hljs.initHighlightingOnLoad();
+            } },
+            { src: 'plugin/zoom-js/zoom.js', async: true, condition: function () {
+                return !!document.body.classList;
+            } },
+            { src: 'plugin/notes/notes.js', async: true, condition: function () {
+                return !!document.body.classList;
+            } }
+        ]
+    });
+
+</script>
+
+</body>
+</html>
