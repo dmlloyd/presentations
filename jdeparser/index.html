@@ -199,14 +199,14 @@
             <li>
                 <code>JType</code> represents a type, build from a <code>Class</code> or string
                 <ul class="fragment">
-                    <li>The <code>_(Foo.class)</code> shortcut construct yields a <code>JType</code></li>
+                    <li>The <code>$t(Foo.class)</code> shortcut construct yields a <code>JType</code></li>
                     <li>From here, intuitive method chaining for type operations</li>
                 </ul>
             </li>
             <li class="fragment">
                 <code>JExpr</code> represents an immutable expression
                 <ul class="fragment">
-                    <li>The <code>$("name")</code> shortcut construct yields a <code>JExpr</code> variable reference</li>
+                    <li>The <code>$v("name")</code> shortcut construct yields a <code>JExpr</code> variable reference</li>
                     <li>From here, intuitive method chaining for all operators</li>
                 </ul>
             </li>
@@ -221,11 +221,11 @@
     main.param(FINAL, String[].class, "args");
     JBlock body = main.body();
     body.add(
-        _(System.class).$("out")
+        $t(System.class).$v("out")
             .call("printf")
                 .arg(JExprs.str("%s %s%n"))
-                .arg($("HELLO"))
-                .arg($("args").idx(0))
+                .arg($v("HELLO"))
+                .arg($v("args").idx(0))
     );
         </code></pre>
     </section>
