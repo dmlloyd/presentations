@@ -276,6 +276,40 @@
         </aside>
     </section>
 
+    <section id="perm">
+        <h2>Authoring custom permissions</h2>
+
+        <ul>
+            <li class="fragment">Must extend <code>java.security.Permission</code></li>
+            <li class="fragment">Must have two constructors
+                <ul>
+                    <li class="fragment"><code>YourPermission(String name)</code></li>
+                    <li class="fragment"><code>YourPermission(String name, String actions)</code></li>
+                </ul>
+            </li>
+            <li class="fragment">Even if you don't support actions</li>
+        </ul>
+    </section>
+
+    <section id="perm-guide">
+        <h2>Custom permission guidelines</h2>
+
+        <ul>
+            <li class="fragment">Use <code>BasicPermission</code> for simple, hierarchical names</li>
+            <li class="fragment"><code>org.wildfly.security.permission.PermissionActions</code></li>
+        </ul>
+    </section>
+
+    <section id="perm-ser">
+        <h2>Permission serializability</h2>
+
+        <ul>
+            <li class="fragment">Permissions are serializable</li>
+            <li class="fragment">Fixed serialVersionUID</li>
+            <li class="fragment">Compatibility</li>
+        </ul>
+    </section>
+
     <section id="wfsm">
         <h1>WildFly Security Manager</h1>
     </section>
