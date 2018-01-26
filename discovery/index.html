@@ -1,0 +1,230 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+
+    <title>Discovery in WildFly</title>
+
+    <meta name="description" content="Discovery in WildFly">
+    <meta name="author" content="David M. Lloyd">
+
+    <meta name="apple-mobile-web-app-capable" content="yes"/>
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+    <link rel="stylesheet" href="css/reveal.min.css">
+    <link rel="stylesheet" href="css/theme/night.css" id="theme">
+
+    <!-- For syntax highlighting -->
+    <link rel="stylesheet" href="lib/css/zenburn.css">
+
+    <!-- If the query includes 'print-pdf', include the PDF print sheet -->
+    <script>
+        if (window.location.search.match(/print-pdf/gi)) {
+            var link = document.createElement('link');
+            link.rel = 'stylesheet';
+            link.type = 'text/css';
+            link.href = 'css/print/pdf.css';
+            document.getElementsByTagName('head')[0].appendChild(link);
+        }
+    </script>
+
+    <!--[if lt IE 9]>
+    <script src="lib/js/html5shiv.js"></script>
+    <![endif]-->
+
+    <script src="http://code.jquery.com/jquery-1.10.2.min.js"></script>
+</head>
+
+<body>
+
+<div class="reveal">
+
+<!-- Any section element inside of this container is displayed as a slide -->
+<div class="slides">
+    <section>
+
+        <h1>Discovery</h1>
+        <h2>in WildFly</h2>
+
+        <p>
+            <small><em>Presentation Prepared By:</em><br>David M. Lloyd &lt;<a href="mailto:david.lloyd@redhat.com">david.lloyd@redhat.com</a>&gt;</small>
+        </p>
+    </section>
+
+    <section>
+        <h2><em>Discovery</em> is...</h2>
+        <ul class="fragment">
+            <li>The ability to find <em>services</em> given abstract matching criteria</li>
+            <li class="fragment">The ability to advertise a service's <em>location</em> and <em>attributes</em></li>
+            <li class="fragment">A set of <em>protocols</em> which facilitate discovery operations</li>
+            <li class="fragment">Infrastructure to support the protocols</li>
+        </ul>
+    </section>
+
+    <section>
+        <h2>Discovery may be...</h2>
+        <ul>
+            <li class="fragment"><em>General-purpose</em><span class="fragment">: applying generically to any protocol or service type</span></li>
+            <li class="fragment"><em>Special-purpose</em><span class="fragment">: applying specifically to one (or a small number of) protocol(s) or service type(s)</span></li>
+        </ul>
+    </section>
+
+    <section>
+        <h2>Service characteristics</h2>
+        <ul class="fragment">
+            <li>Services have:
+                <ul>
+                    <li class="fragment">an <em>abstract type</em>
+                        <ul>
+                            <li class="fragment">describes <em>what</em> a service is</li>
+                        </ul>
+                    </li>
+                    <li class="fragment">a <em>location</em> (URL)
+                        <ul>
+                            <li class="fragment">describes <em>where</em> a service is found</li>
+                            <li class="fragment">the url scheme is also referred to as a <em>concrete type</em></li>
+                        </ul>
+                    </li>
+                    <li class="fragment"><em>attributes</em>, which may describe:
+                        <ul>
+                            <li class="fragment">an abstract location, e.g. <code>region=emea</code> or <code>floor=12</code></li>
+                            <li class="fragment">disposition, e.g. <code>use=production</code> vs <code>use=development</code></li>
+                            <li class="fragment">identity, e.g. <code>name=server12</code></li>
+                            <li class="fragment">ownership, e.g. <code>group=marketing-3</code></li>
+                        </ul>
+                    </li>
+                </ul>
+            </li>
+        </ul>
+    </section>
+
+    <section>
+        <h2>Discovery request characteristics</h2>
+        <ul>
+            <li class="fragment">An abstract service type</li>
+            <li class="fragment">An optional concrete service type</li>
+            <li class="fragment">An optional <em>query</em> which matches against service attributes</li>
+        </ul>
+    </section>
+
+    <section>
+        <h2>Discovery response characteristics</h2>
+        <ul>
+            <li class="fragment">A list of matching services with attributes</li>
+            <li class="fragment">Some protocols complete asynchronously</li>
+        </ul>
+    </section>
+
+    <section>
+        <h2>Protocols: SLP (<a href="https://tools.ietf.org/html/rfc2608">RFC 2608</a>)</h2>
+        <ul>
+            <li class="fragment">Multicast, LAN oriented, general-purpose</li>
+            <li class="fragment">Supports isolated named scopes</li>
+            <li class="fragment">Attribute matching on server side using LDAP query strings</li>
+            <li class="fragment">Three roles:
+            <ul>
+                <li class="fragment"><em>User Agent</em> (UA) - a client performing service lookups</li>
+                <li class="fragment"><em>Service Agent</em> (SA) - a service which responds to discovery requests</li>
+                <li class="fragment"><em>Directory Agent</em> (DA) (optional) - an intermediary which registers advertisements from SAs and responds to UAs</li>
+            </ul>
+            </li>
+        </ul>
+    </section>
+
+    <section>
+        <h2>Protocols: DNS-SD (<a href="https://tools.ietf.org/html/rfc6763">RFC 6763</a>)</h2>
+        <ul>
+            <li class="fragment">Uses DNS (LAN or WAN) or mDNS (LAN) protocol, general-purpose</li>
+            <li class="fragment">Attribute matching on client side</li>
+            <li class="fragment">Can use standard DNS infrastructure</li>
+            <li class="fragment">Services are defined in standard DNS RRs</li>
+        </ul>
+    </section>
+
+    <section>
+        <h2>Other discovery protocols</h2>
+        <ul>
+            <li>JGroups <a href="http://www.jgroups.org/javadoc/org/jgroups/protocols/Discovery.html">cluster discovery</a></li>
+            <li>EJB-over-Remoting discovery protocol</li>
+            <li><a href="http://docs.oasis-open.org/ws-dd/discovery/1.1/os/wsdd-discovery-1.1-spec-os.html">WS-Discovery</a>, used particularly by MS Windows</li>
+        </ul>
+    </section>
+
+    <section>
+        <h2><em>WildFly Discovery</em> is...</h2>
+        <ul>
+            <li class="fragment">An <em>API</em> which we can use to perform discovery operations</li>
+            <li class="fragment">An <em>SPI</em> which we can use to implement discovery protocols</li>
+            <li class="fragment">Useful for general-purpose and special-purpose discovery</li>
+            <li class="fragment">Available on GitHub (<code><a href="https://github.com/wildfly">wildfly</a>/<a href="https://github.com/wildfly/wildfly-discovery"/>wildfly-discovery</a></code>)</li>
+        </ul>
+    </section>
+
+    <section>
+        <h2>WildFly Discovery allows...</h2>
+        <ul>
+            <li class="fragment">Discovery as a separated concern</li>
+            <li class="fragment">Delegation of discovery protocol implementation</li>
+            <li class="fragment">Reuse of discovery protocols between projects</li>
+            <li class="fragment">Centralized discovery configuration in the app server</li>
+        </ul>
+    </section>
+
+    <section id="end">
+        <h1>That's it!</h1>
+    </section>
+</div>
+
+</div>
+
+<script src="lib/js/head.min.js"></script>
+<script src="js/reveal.min.js"></script>
+
+<script>
+
+    // Full list of configuration options available here:
+    // https://github.com/hakimel/reveal.js#configuration
+    Reveal.initialize({
+        controls: true,
+        progress: true,
+        history: true,
+        center: true,
+        backgroundTransition: 'fade',
+
+        theme: Reveal.getQueryHash().theme, // available themes are in /css/theme
+        transition: Reveal.getQueryHash().transition || 'default', // default/cube/page/concave/zoom/linear/fade/none
+
+        // Parallax scrolling
+        // parallaxBackgroundImage: 'https://s3.amazonaws.com/hakim-static/reveal-js/reveal-parallax-1.jpg',
+        // parallaxBackgroundSize: '2100px 900px',
+
+        // Optional libraries used to extend on reveal.js
+        dependencies: [
+            { src: 'lib/js/classList.js', condition: function () {
+                return !document.body.classList;
+            } },
+            { src: 'plugin/markdown/marked.js', condition: function () {
+                return !!document.querySelector('[data-markdown]');
+            } },
+            { src: 'plugin/markdown/markdown.js', condition: function () {
+                return !!document.querySelector('[data-markdown]');
+            } },
+            { src: 'plugin/highlight/highlight.js', async: true, callback: function () {
+                hljs.initHighlightingOnLoad();
+            } },
+            { src: 'plugin/zoom-js/zoom.js', async: true, condition: function () {
+                return !!document.body.classList;
+            } },
+            { src: 'plugin/notes/notes.js', async: true, condition: function () {
+                return !!document.body.classList;
+            } }
+        ]
+    });
+
+</script>
+
+</body>
+</html>
